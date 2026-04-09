@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DFTest — Dataflow Testing, Visualized</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Syne:wght@400;600;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  /* ── Reset & base ─────────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:       #0d1117;
+    --bg2:      #161b22;
+    --bg3:      #1c2330;
+    --teal:     #3ecfb2;
+    --teal-dim: #1d7a69;
+    --teal-glow:#3ecfb240;
+    --white:    #f0f6fc;
+    --muted:    #8b949e;
+    --border:   #30363d;
+    --accent:   #58a6ff;
+    --warn:     #f0883e;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ── Dot-grid background ──────────────────────────── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: radial-gradient(circle, #3ecfb218 1px, transparent 1px);
+    background-size: 28px 28px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── Layout helpers ───────────────────────────────── */
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 0 2rem; position: relative; z-index: 1; }
+
+  /* ── NAV ──────────────────────────────────────────── */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: #0d111799;
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+
+  .nav-brand {
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 600;
+    font-size: 1.05rem;
+    color: var(--teal);
+    letter-spacing: -0.02em;
+    text-decoration: none;
+  }
+
+  .nav-links { display: flex; gap: 2rem; }
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 400;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--white); }
+
+  /* ── HERO ─────────────────────────────────────────── */
+  .hero {
+    padding: 7rem 2rem 5rem;
+    max-width: 1100px;
+    margin: 0 auto;
+    position: relative; z-index: 1;
+  }
+
+  .hero-eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--teal);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 1.4rem;
+    display: flex; align-items: center; gap: 0.6rem;
+  }
+  .hero-eyebrow::before {
+    content: '';
+    display: inline-block;
+    width: 28px; height: 2px;
+    background: var(--teal);
+  }
+
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(2.8rem, 6vw, 5rem);
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    margin-bottom: 1.6rem;
+  }
+
+  .hero h1 em {
+    font-style: normal;
+    color: var(--teal);
+  }
+
+  .hero-sub {
+    font-size: 1.2rem;
+    color: var(--muted);
+    max-width: 560px;
+    line-height: 1.65;
+    margin-bottom: 2.8rem;
+    font-weight: 300;
+  }
+
+  .hero-cta {
+    display: flex; gap: 1rem; flex-wrap: wrap;
+  }
+
+  .btn {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.8rem 1.8rem;
+    border-radius: 6px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    font-size: 0.95rem;
+    text-decoration: none;
+    transition: all 0.2s;
+    cursor: pointer; border: none;
+  }
+
+  .btn-primary {
+    background: var(--teal);
+    color: #0d1117;
+  }
+  .btn-primary:hover {
+    background: #5df0d3;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px var(--teal-glow);
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--white);
+    border: 1px solid var(--border);
+  }
+  .btn-ghost:hover {
+    border-color: var(--teal);
+    color: var(--teal);
+    transform: translateY(-1px);
+  }
+
+  /* ── SCREENSHOT SHOWCASE ──────────────────────────── */
+  .showcase {
+    padding: 2rem 0 5rem;
+    position: relative; z-index: 1;
+  }
+
+  .screenshot-frame {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 32px 80px #00000060, 0 0 0 1px var(--border);
+    position: relative;
+  }
+
+  .screenshot-frame::before {
+    content: '';
+    display: block;
+    height: 36px;
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* Traffic-light dots */
+  .screenshot-frame::after {
+    content: '';
+    position: absolute;
+    top: 11px; left: 14px;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: #ff5f57;
+    box-shadow: 20px 0 0 #ffbd2e, 40px 0 0 #28c840;
+  }
+
+  .screenshot-frame img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .screenshot-caption {
+    text-align: center;
+    margin-top: 1rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+  }
+
+  /* Two-column screenshots */
+  .screenshots-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  @media (max-width: 768px) {
+    .screenshots-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ── DIVIDER ──────────────────────────────────────── */
+  .section-divider {
+    display: flex; align-items: center; gap: 1.5rem;
+    max-width: 1100px; margin: 5rem auto 3rem; padding: 0 2rem;
+    position: relative; z-index: 1;
+  }
+  .section-divider::before, .section-divider::after {
+    content: ''; flex: 1; height: 1px; background: var(--border);
+  }
+  .section-divider span {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--teal);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  /* ── FEATURES ─────────────────────────────────────── */
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5px;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative; z-index: 1;
+  }
+
+  @media (max-width: 720px) {
+    .features-grid { grid-template-columns: 1fr; }
+  }
+
+  .feature-card {
+    background: var(--bg2);
+    padding: 2rem;
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    transition: background 0.2s;
+  }
+  .feature-card:hover { background: var(--bg3); }
+  .feature-card:nth-child(3n) { border-right: none; }
+  .feature-card:nth-last-child(-n+3) { border-bottom: none; }
+
+  .feature-icon {
+    font-size: 1.6rem;
+    margin-bottom: 1rem;
+    display: block;
+  }
+
+  .feature-card h3 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    color: var(--white);
+  }
+
+  .feature-card p {
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* ── HOW IT WORKS ─────────────────────────────────── */
+  .steps {
+    max-width: 1100px; margin: 0 auto; padding: 0 2rem;
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem;
+    position: relative; z-index: 1;
+  }
+
+  @media (max-width: 720px) {
+    .steps { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .step { text-align: center; }
+
+  .step-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 2.2rem;
+    font-weight: 600;
+    color: var(--teal-dim);
+    line-height: 1;
+    margin-bottom: 0.8rem;
+  }
+
+  .step h4 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .step p {
+    font-size: 0.84rem;
+    color: var(--muted);
+    line-height: 1.55;
+  }
+
+  /* Connector between steps */
+  .steps-wrap {
+    position: relative;
+  }
+  .steps-wrap::before {
+    content: '';
+    position: absolute;
+    top: 1.5rem;
+    left: calc(12.5% + 1rem);
+    right: calc(12.5% + 1rem);
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--teal-dim), var(--teal-dim), transparent);
+    z-index: 0;
+  }
+
+  /* ── CRITERIA ─────────────────────────────────────── */
+  .criteria-section {
+    max-width: 1100px; margin: 0 auto; padding: 0 2rem;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;
+    position: relative; z-index: 1;
+  }
+
+  @media (max-width: 680px) {
+    .criteria-section { grid-template-columns: 1fr; }
+  }
+
+  .criteria-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.8rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .criteria-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--teal);
+  }
+
+  .criteria-card.secondary::before {
+    background: var(--accent);
+  }
+
+  .criteria-card h3 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .criteria-card .subtitle {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--teal);
+    letter-spacing: 0.1em;
+    margin-bottom: 1rem;
+  }
+
+  .criteria-card.secondary .subtitle { color: var(--accent); }
+
+  .criteria-card p {
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.65;
+  }
+
+  /* ── TECH STACK PILLS ─────────────────────────────── */
+  .tech-row {
+    display: flex; flex-wrap: wrap; gap: 0.6rem;
+    max-width: 1100px; margin: 0 auto; padding: 0 2rem;
+    position: relative; z-index: 1;
+  }
+
+  .pill {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.78rem;
+    padding: 0.35rem 0.9rem;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    background: var(--bg2);
+    white-space: nowrap;
+  }
+
+  /* ── FOOTER ───────────────────────────────────────── */
+  footer {
+    margin-top: 8rem;
+    border-top: 1px solid var(--border);
+    padding: 2.5rem 2rem;
+    text-align: center;
+    position: relative; z-index: 1;
+  }
+
+  footer p {
+    font-size: 0.84rem;
+    color: var(--muted);
+  }
+
+  footer a { color: var(--teal); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  /* ── Animations ───────────────────────────────────── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero-eyebrow { animation: fadeUp 0.6s ease both; }
+  .hero h1      { animation: fadeUp 0.6s 0.1s ease both; }
+  .hero-sub     { animation: fadeUp 0.6s 0.2s ease both; }
+  .hero-cta     { animation: fadeUp 0.6s 0.3s ease both; }
+  .showcase     { animation: fadeUp 0.8s 0.4s ease both; }
+
+  /* ── Glow accent ──────────────────────────────────── */
+  .hero-glow {
+    position: absolute;
+    top: -8rem; right: -10rem;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, #3ecfb220 0%, transparent 70%);
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-brand" href="#">DFTest</a>
+  <div class="nav-links">
+    <a href="#features">Features</a>
+    <a href="#how-it-works">How it works</a>
+    <a href="#criteria">Coverage criteria</a>
+    <a href="#tech">Technology</a>
+    <a href="guide.html">Guide</a>
+    <a href="#download" style="color:var(--teal); font-weight:500;">Download &amp; run</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-eyebrow">Dataflow testing education tool</div>
+  <h1>Control flow graphs,<br><em>made interactive.</em></h1>
+  <p class="hero-sub">
+    Paste a Java method, instantly visualize its CFG, compute DU pairs and DU paths,
+    run your test suite, and see exactly what's covered — all in one desktop tool.
+  </p>
+  <div class="hero-cta">
+    <a href="dftest.jar" download class="btn btn-primary">⬇ Download DFTest</a>
+    <a href="guide.html" class="btn btn-ghost">Getting started guide</a>
+    <a href="#features" class="btn btn-ghost">Explore features</a>
+  </div>
+</section>
+
+<!-- SCREENSHOTS -->
+<section class="showcase">
+  <div class="screenshots-grid">
+    <div>
+      <div class="screenshot-frame">
+        <img src="1775748790450_image.png" alt="DFTest main interface showing a pattern index method with full DU pair coverage analysis">
+      </div>
+      <p class="screenshot-caption">// full analysis with coverage check &amp; variable filter</p>
+    </div>
+    <div>
+      <div class="screenshot-frame">
+        <img src="1775749113528_image.png" alt="CFG graph for a simple method showing nodes, edges and def/use annotations">
+      </div>
+      <p class="screenshot-caption">// CFG with hierarchical layout, defs &amp; uses labelled</p>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<div class="section-divider" id="features"><span>Features</span></div>
+
+<div class="features-grid">
+  <div class="feature-card">
+    <span class="feature-icon">🔍</span>
+    <h3>Instant CFG Construction</h3>
+    <p>Paste or open any Java class. Select a method and the tool builds a precise Control Flow Graph using Spoon, handling loops, switches, try/catch/finally, break and continue.</p>
+  </div>
+  <div class="feature-card">
+    <span class="feature-icon">🔗</span>
+    <h3>DU Pairs &amp; DU Paths</h3>
+    <p>Automatically computes all def-use pairs and def-use paths under the all-uses and all-DU-paths criteria. Results displayed alongside the graph with ✓/✗ coverage markers.</p>
+  </div>
+  <div class="feature-card">
+    <span class="feature-icon">🎯</span>
+    <h3>Filter by Variable</h3>
+    <p>With complex methods, the DU panels can grow long. Filter instantly by any defined variable to focus attention on one def-use relationship at a time.</p>
+  </div>
+  <div class="feature-card">
+    <span class="feature-icon">⚡</span>
+    <h3>Live Instrumentation</h3>
+    <p>Point the tool at a JUnit test file. It compiles, instruments, and runs the tests, collecting execution traces that are mapped back to CFG nodes automatically.</p>
+  </div>
+  <div class="feature-card">
+    <span class="feature-icon">🗺️</span>
+    <h3>Path Walkthrough</h3>
+    <p>Enter test paths manually or import them from traces. Click any path and the graph highlights the nodes visited, with bullet markers showing per-path DU coverage.</p>
+  </div>
+  <div class="feature-card">
+    <span class="feature-icon">📊</span>
+    <h3>HTML Coverage Report</h3>
+    <p>Generate a self-contained HTML report across all methods with test paths, showing pair and path coverage percentages with full annotated listings.</p>
+  </div>
+  <div class="feature-card">
+    <span class="feature-icon">🧩</span>
+    <h3>Configurable Analysis</h3>
+    <p>Control field-write modelling, method-call def behaviour, node merging, and try/catch precision through the Settings dialog — no code changes needed.</p>
+  </div>
+  <div class="feature-card">
+    <span class="feature-icon">💾</span>
+    <h3>Save &amp; Resume Sessions</h3>
+    <p>Save the full analysis state — source, paths, coverage results, configuration — to a <code>.cfgproject</code> file and reload it at any time.</p>
+  </div>
+  <div class="feature-card">
+    <span class="feature-icon">🖱️</span>
+    <h3>Click-to-Highlight</h3>
+    <p>Click any graph node to highlight the corresponding source statement. Works with merged basic blocks and precise sub-expression ranges for condition nodes.</p>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<div class="section-divider" id="how-it-works"><span>How it works</span></div>
+
+<div class="steps-wrap">
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <h4>Load source</h4>
+      <p>Paste Java source directly or open a <code>.java</code> file. Select a method from the dropdown.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <h4>Analyze</h4>
+      <p>The tool builds the CFG, computes DU pairs and paths, and renders the interactive graph.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <h4>Add test paths</h4>
+      <p>Enter paths manually, or run a JUnit test file to collect traces automatically.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">04</div>
+      <h4>Check coverage</h4>
+      <p>See which DU pairs and paths are covered, explore gaps, and export an HTML report.</p>
+    </div>
+  </div>
+</div>
+
+<!-- COVERAGE CRITERIA -->
+<div class="section-divider" id="criteria"><span>Coverage criteria</span></div>
+
+<div class="criteria-section">
+  <div class="criteria-card">
+    <div class="subtitle">All-uses criterion</div>
+    <h3>DU Pairs</h3>
+    <p>
+      For each variable <em>v</em>, and each definition of <em>v</em> at node <em>d</em>,
+      the test suite must include at least one def-clear path from <em>d</em> to every
+      reachable use (node use or edge use) of <em>v</em>. DFTest computes every
+      such pair and tracks which have been covered.
+    </p>
+  </div>
+  <div class="criteria-card secondary">
+    <div class="subtitle">All-DU-paths criterion</div>
+    <h3>DU Paths</h3>
+    <p>
+      A stronger criterion — for each DU pair, <em>every</em> simple def-clear path
+      between the definition and use must be exercised. DFTest enumerates all
+      such paths (allowing loop-simple closing back to the def) and shows exactly
+      which remain uncovered.
+    </p>
+  </div>
+</div>
+
+<!-- TECH -->
+<div class="section-divider" id="tech"><span>Technology</span></div>
+
+<div class="tech-row">
+  <span class="pill">Java 21</span>
+  <span class="pill">JavaFX 21</span>
+  <span class="pill">Spoon 10.4.2</span>
+  <span class="pill">GraphStream 2.0</span>
+  <span class="pill">Gson 2.10.1</span>
+  <span class="pill">JUnit Jupiter 5.10</span>
+  <span class="pill">Maven</span>
+  <span class="pill">Fat JAR (maven-shade)</span>
+</div>
+
+<!-- DOWNLOAD -->
+<div class="section-divider" id="download"><span>Download &amp; run</span></div>
+
+<div class="wrap" style="padding-bottom: 5rem;">
+
+  <!-- Download button -->
+  <div style="text-align:center; margin-bottom: 3rem;">
+    <p style="color:var(--muted); font-size:0.95rem; margin-bottom:0.5rem;">
+      Runs on Windows, macOS and Linux &mdash; requires a <strong style="color:var(--white)">JDK 21</strong> or later.
+    </p>
+    <p style="color:var(--muted); font-size:0.88rem; margin-bottom:1.8rem;">
+      Self-contained fat JAR &mdash; no installation needed.
+    </p>
+    <a href="dftest.jar" download class="btn btn-primary" style="font-size:1.05rem; padding:1rem 2.8rem;">
+      ⬇ &nbsp;Download DFTest
+    </a>
+  </div>
+
+  <!-- Instructions grid -->
+  <div style="display:grid; grid-template-columns: repeat(3,1fr); gap:1.5px;
+              border:1.5px solid var(--border); border-radius:12px; overflow:hidden;">
+
+    <div style="background:var(--bg2); padding:1.8rem; border-right:1px solid var(--border);">
+      <div style="font-family:'IBM Plex Mono',monospace; font-size:0.72rem; color:var(--teal);
+                  letter-spacing:0.14em; text-transform:uppercase; margin-bottom:0.8rem;">Step 1 — Prerequisites</div>
+      <p style="font-size:0.88rem; color:var(--muted); line-height:1.65; margin-bottom:1rem;">
+        Make sure you have a <strong style="color:var(--white)">JDK 21</strong> (or later) installed.
+        To check, run:
+      </p>
+      <pre style="background:var(--bg); border:1px solid var(--border); border-radius:6px;
+                  padding:0.8rem 1rem; font-family:'IBM Plex Mono',monospace;
+                  font-size:0.8rem; color:var(--teal); margin:0;">java -version</pre>
+      <p style="font-size:0.82rem; color:var(--muted); margin-top:0.8rem;">
+        If not installed, download from
+        <a href="https://adoptium.net" target="_blank" style="color:var(--accent);">Adoptium</a>
+        or any JDK 21 distribution.
+      </p>
+    </div>
+
+    <div style="background:var(--bg2); padding:1.8rem; border-right:1px solid var(--border);">
+      <div style="font-family:'IBM Plex Mono',monospace; font-size:0.72rem; color:var(--teal);
+                  letter-spacing:0.14em; text-transform:uppercase; margin-bottom:0.8rem;">Step 2 — Launch</div>
+      <p style="font-size:0.88rem; color:var(--muted); line-height:1.65; margin-bottom:1rem;">
+        Open a terminal in the folder where you saved the JAR and run:
+      </p>
+      <pre style="background:var(--bg); border:1px solid var(--border); border-radius:6px;
+                  padding:0.8rem 1rem; font-family:'IBM Plex Mono',monospace;
+                  font-size:0.8rem; color:var(--teal); margin:0;">java -jar dftest.jar</pre>
+      <p style="font-size:0.82rem; color:var(--muted); margin-top:0.8rem;">
+        On Windows you can also double-click the JAR if your JDK is on the system PATH.
+      </p>
+    </div>
+
+    <div style="background:var(--bg2); padding:1.8rem;">
+      <div style="font-family:'IBM Plex Mono',monospace; font-size:0.72rem; color:var(--teal);
+                  letter-spacing:0.14em; text-transform:uppercase; margin-bottom:0.8rem;">Step 3 — First use</div>
+      <p style="font-size:0.88rem; color:var(--muted); line-height:1.65;">
+        Once the window opens:
+      </p>
+      <ol style="font-size:0.86rem; color:var(--muted); line-height:1.9; padding-left:1.2rem; margin-top:0.5rem;">
+        <li>Paste or open a <strong style="color:var(--white)">.java</strong> file</li>
+        <li>Select a method from the dropdown</li>
+        <li>Click <strong style="color:var(--white)">▶ Analyze</strong></li>
+        <li>Enter test paths and click <strong style="color:var(--white)">Check coverage</strong></li>
+      </ol>
+    </div>
+
+  </div>
+
+  <!-- JUnit note -->
+  <p style="font-size:0.84rem; color:var(--muted); text-align:center; margin-top:1.5rem;">
+    To run test files automatically, use <strong style="color:var(--white)">📄 Set test file…</strong>
+    to point DFTest at a JUnit 5 test class. The built-in preset button will locate
+    JUnit jars in your local Maven repository automatically.
+  </p>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div style="max-width:1100px; margin:0 auto; display:flex; flex-wrap:wrap;
+              justify-content:space-between; align-items:flex-start; gap:2rem;
+              padding-bottom:2rem; border-bottom:1px solid var(--border); margin-bottom:1.5rem;">
+
+    <div>
+      <div style="font-family:'IBM Plex Mono',monospace; font-weight:600;
+                  font-size:1rem; color:var(--teal); margin-bottom:0.5rem;">DFTest</div>
+      <p style="font-size:0.85rem; color:var(--muted); max-width:320px; line-height:1.6;">
+        An interactive dataflow testing tool for Java,<br>
+        built for education and research.
+      </p>
+    </div>
+
+    <div>
+      <div style="font-family:'Syne',sans-serif; font-weight:600; font-size:0.85rem;
+                  color:var(--white); margin-bottom:0.7rem; letter-spacing:0.04em;">Author</div>
+      <p style="font-size:0.88rem; color:var(--muted); line-height:1.8;">
+        <strong style="color:var(--white);">Your Name</strong><br>
+        Your Title / Department<br>
+        Your Institution
+      </p>
+    </div>
+
+    <div>
+      <div style="font-family:'Syne',sans-serif; font-weight:600; font-size:0.85rem;
+                  color:var(--white); margin-bottom:0.7rem; letter-spacing:0.04em;">Contact</div>
+      <p style="font-size:0.88rem; color:var(--muted); line-height:1.8;">
+        ✉ <a href="mailto:your@email.com" style="color:var(--accent);">your@email.com</a><br>
+        🔗 <a href="https://your-website.com" target="_blank" style="color:var(--accent);">your-website.com</a><br>
+        📍 Your City, Country
+      </p>
+    </div>
+
+  </div>
+  <p style="font-size:0.8rem; color:var(--muted);">
+    &copy; 2025 Your Name &mdash; DFTest is free for academic and educational use.
+  </p>
+</footer>
+
+</body>
+</html>
