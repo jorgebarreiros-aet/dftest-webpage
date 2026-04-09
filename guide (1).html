@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DFTest — Getting Started Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Syne:wght@400;600;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:       #f8f9fb;
+    --bg2:      #ffffff;
+    --bg3:      #eef0f3;
+    --teal:     #0e8f78;
+    --teal-dim: #c8ede7;
+    --teal-glow:#0e8f7820;
+    --white:    #1a1f2e;
+    --muted:    #5a6375;
+    --border:   #dde1e8;
+    --accent:   #1a6fd4;
+    --warn:     #b85c00;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: radial-gradient(circle, #0e8f7812 1px, transparent 1px);
+    background-size: 28px 28px;
+    pointer-events: none; z-index: 0;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: #f8f9fbee;
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .nav-brand {
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 600; font-size: 1.05rem;
+    color: var(--teal); letter-spacing: -0.02em; text-decoration: none;
+  }
+  .nav-links { display: flex; gap: 2rem; }
+  .nav-links a {
+    color: var(--muted); text-decoration: none;
+    font-size: 0.9rem; font-weight: 400; transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--white); }
+
+  /* ── LAYOUT ── */
+  .wrap {
+    max-width: 860px; margin: 0 auto;
+    padding: 0 2rem; position: relative; z-index: 1;
+  }
+
+  /* ── HERO ── */
+  .guide-hero {
+    padding: 5rem 2rem 3.5rem;
+    max-width: 860px; margin: 0 auto;
+    position: relative; z-index: 1;
+  }
+  .guide-eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.78rem; font-weight: 600;
+    color: var(--teal); letter-spacing: 0.14em;
+    text-transform: uppercase; margin-bottom: 1rem;
+    display: flex; align-items: center; gap: 0.6rem;
+  }
+  .guide-eyebrow::before {
+    content: ''; display: inline-block;
+    width: 28px; height: 2px; background: var(--teal);
+  }
+  .guide-hero h1 {
+    font-family: 'Syne', sans-serif; font-weight: 800;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    line-height: 1.1; letter-spacing: -0.03em; margin-bottom: 1rem;
+  }
+  .guide-hero h1 em { font-style: normal; color: var(--teal); }
+  .guide-hero .lead {
+    font-size: 1.05rem; color: var(--muted);
+    line-height: 1.7; max-width: 640px;
+  }
+
+  /* ── CONTENT TYPOGRAPHY ── */
+  .content { padding: 0 0 6rem; }
+
+  .content h2 {
+    font-family: 'Syne', sans-serif; font-weight: 700;
+    font-size: 1.5rem; margin: 3.5rem 0 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+    color: var(--white);
+  }
+  .content h2:first-child { margin-top: 2rem; border-top: none; }
+
+  .content h3 {
+    font-family: 'Syne', sans-serif; font-weight: 600;
+    font-size: 1.05rem; margin: 2rem 0 0.6rem;
+    color: var(--white);
+  }
+
+  .content p {
+    font-size: 0.95rem; color: var(--muted);
+    line-height: 1.75; margin-bottom: 1rem;
+  }
+
+  .content p strong { color: var(--white); font-weight: 500; }
+  .content p em { color: var(--teal); font-style: italic; }
+
+  .content a { color: var(--accent); text-decoration: none; }
+  .content a:hover { text-decoration: underline; }
+
+  /* ── STEP BLOCKS ── */
+  .step-block {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--teal);
+    border-radius: 0 10px 10px 0;
+    padding: 1.6rem 1.8rem;
+    margin: 2rem 0;
+  }
+  .step-block .step-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem; font-weight: 600;
+    color: var(--teal); letter-spacing: 0.14em;
+    text-transform: uppercase; margin-bottom: 0.6rem;
+  }
+  .step-block h3 {
+    margin: 0 0 0.8rem;
+    font-size: 1.05rem;
+  }
+  .step-block p {
+    margin-bottom: 0.7rem;
+  }
+  .step-block p:last-child { margin-bottom: 0; }
+
+  /* ── CODE ── */
+  code {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.85em;
+    background: var(--bg3);
+    color: var(--teal);
+    padding: 0.15em 0.45em;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+  }
+
+  pre {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.2rem;
+    margin: 1rem 0;
+    overflow-x: auto;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.85rem;
+    color: #0a6657;
+    line-height: 1.7;
+  }
+
+  /* ── CALLOUT ── */
+  .callout {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--warn);
+    border-radius: 0 8px 8px 0;
+    padding: 1rem 1.4rem;
+    margin: 1.5rem 0;
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+  .callout strong { color: var(--warn); }
+  .callout.info { border-left-color: var(--accent); }
+  .callout.info strong { color: var(--accent); }
+  .callout.tip  { border-left-color: var(--teal); }
+  .callout.tip strong { color: var(--teal); }
+
+  /* ── SCREENSHOT SLOT ── */
+  .screenshot-slot {
+    background: var(--bg2);
+    border: 1px dashed var(--border);
+    border-radius: 10px;
+    padding: 2.5rem;
+    margin: 1.5rem 0;
+    text-align: center;
+    color: var(--muted);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+  }
+  /* Swap the slot for an actual image by replacing the div with <img> */
+  .screenshot-slot img {
+    display: block; width: 100%; height: auto;
+    border-radius: 8px;
+  }
+
+  /* ── EXAMPLE BOX ── */
+  .example-box {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.2rem 1.5rem;
+    margin: 1rem 0;
+  }
+  .example-box .example-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem; color: var(--muted);
+    letter-spacing: 0.1em; text-transform: uppercase;
+    margin-bottom: 0.6rem;
+  }
+  .example-box p {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.85rem; color: var(--white);
+    margin: 0.3rem 0; line-height: 1.6;
+  }
+  .example-box p span { color: var(--muted); }
+
+  /* ── EXERCISE BLOCK ── */
+  .exercises {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 2rem;
+    margin: 2.5rem 0;
+  }
+  .exercises h3 {
+    font-family: 'Syne', sans-serif; font-weight: 700;
+    font-size: 1rem; color: var(--teal);
+    margin: 0 0 1.2rem;
+    font-family: 'IBM Plex Mono', monospace;
+    letter-spacing: 0.1em; text-transform: uppercase;
+  }
+  .exercises ol {
+    padding-left: 1.4rem;
+    color: var(--muted);
+    font-size: 0.92rem;
+    line-height: 1.9;
+  }
+  .exercises ol li { margin-bottom: 0.4rem; }
+  .exercises ol li strong { color: var(--white); }
+
+  /* ── TOC ── */
+  .toc {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem 2rem;
+    margin: 2.5rem 0;
+  }
+  .toc-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem; color: var(--muted);
+    letter-spacing: 0.12em; text-transform: uppercase;
+    margin-bottom: 0.8rem;
+  }
+  .toc ol {
+    padding-left: 1.2rem;
+    font-size: 0.88rem;
+    line-height: 2;
+  }
+  .toc a { color: var(--muted); text-decoration: none; }
+  .toc a:hover { color: var(--teal); }
+
+  /* ── FOOTER ── */
+  footer {
+    margin-top: 4rem;
+    border-top: 1px solid var(--border);
+    padding: 2rem 2rem;
+    text-align: center;
+    position: relative; z-index: 1;
+    font-size: 0.84rem; color: var(--muted);
+  }
+  footer a { color: var(--teal); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  /* ── ANIMATION ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .guide-hero { animation: fadeUp 0.6s ease both; }
+
+  /* Screenshots sit nicely on light background */
+  .content img {
+    display: block; width: 100%; height: auto;
+    border-radius: 8px; margin: 1.5rem 0;
+    border: 1px solid var(--border);
+    box-shadow: 0 4px 20px #00000014;
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-brand" href="dftest.html">DFTest</a>
+  <div class="nav-links">
+    <a href="dftest.html">Home</a>
+    <a href="dftest.html#features">Features</a>
+    <a href="dftest.html#download">Download</a>
+    <a href="#" style="color:var(--teal);">Guide</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="guide-hero">
+  <div class="guide-eyebrow">Getting started</div>
+  <h1>A practical guide to<br><em>dataflow testing</em> with DFTest</h1>
+  <p class="lead">
+    This guide walks you through the main features of DFTest, from loading a Java method
+    and reading its control flow graph to checking test coverage and generating a report.
+  </p>
+</div>
+
+<div class="wrap">
+  <div class="content">
+
+    <!-- TOC -->
+    <div class="toc">
+      <div class="toc-label">Contents</div>
+      <ol>
+        <li><a href="#intro">What DFTest does</a></li>
+        <li><a href="#interface">Exploring the interface</a></li>
+        <li><a href="#graph">Reading the CFG</a></li>
+        <li><a href="#merge">Merging linear nodes</a></li>
+        <li><a href="#paths">Entering and checking test paths</a></li>
+        <li><a href="#path-click">Clicking paths and DU entries</a></li>
+        <li><a href="#report">Generating a coverage report</a></li>
+        <li><a href="#save">Saving and loading a project</a></li>
+        <li><a href="#files">Working with Java files</a></li>
+        <li><a href="#testfile">Importing traces from a test file</a></li>
+      </ol>
+    </div>
+
+    <div class="callout">
+      <strong>Note:</strong> DFTest is an actively developed research and teaching tool.
+      You may encounter occasional limitations or quirks. Feedback is very welcome.
+    </div>
+
+    <!-- 1. WHAT IT DOES -->
+    <h2 id="intro">1 — What DFTest does</h2>
+    <p>
+      DFTest is designed to support graph-based dataflow testing of Java source code.
+      Given a Java method, it can:
+    </p>
+    <ul style="padding-left:1.4rem; color:var(--muted); font-size:0.95rem; line-height:2; margin-bottom:1rem;">
+      <li>Derive the <strong>Control Flow Graph (CFG)</strong></li>
+      <li>Identify all <strong>DU-pairs</strong> and <strong>DU-paths</strong></li>
+      <li>Determine the test paths traversed by a provided test file</li>
+      <li>Highlight which requirements are satisfied under the <strong>all-uses</strong> and <strong>all-DU-paths</strong> coverage criteria</li>
+      <li>Produce an <strong>HTML coverage report</strong> across multiple methods</li>
+    </ul>
+    <p>
+      Because it builds and displays the CFG interactively, DFTest can also assist
+      in designing and evaluating tests based on structural graph coverage, even without
+      a test file.
+    </p>
+
+    <!-- 2. INTERFACE -->
+    <h2 id="interface">2 — Exploring the interface</h2>
+
+    <div class="step-block">
+      <div class="step-label">Step 1</div>
+      <h3>Launch DFTest</h3>
+      <p>
+        Download <code>dftest.jar</code> and run it from a terminal:
+      </p>
+      <pre>java -jar dftest.jar</pre>
+      <p>
+        The GUI will open showing a default Java method already loaded and analysed.
+      </p>
+    </div>
+
+    <img src="images/image2.png" alt="DFTest main window on launch, showing source editor, CFG and DU panels">
+
+    <p>
+      The window is divided into three main areas:
+    </p>
+    <ul style="padding-left:1.4rem; color:var(--muted); font-size:0.95rem; line-height:2; margin-bottom:1rem;">
+      <li><strong>Top-left</strong> — Java source code editor</li>
+      <li><strong>Right</strong> — Control flow graph</li>
+      <li><strong>Bottom</strong> — DU-Pairs and DU-Paths panels, with a variable filter</li>
+    </ul>
+
+    <!-- 3. READING THE CFG -->
+    <h2 id="graph">3 — Reading the CFG</h2>
+    <p>
+      Each node in the graph corresponds to a statement or group of statements in the
+      source code. Nodes display the variables they <strong>define</strong> (def) and
+      <strong>use</strong>. Edges carry the condition variable uses for decision nodes.
+    </p>
+
+    <div class="step-block">
+      <div class="step-label">Step 2</div>
+      <h3>Click a node to highlight source code</h3>
+      <p>
+        Click on any node in the graph — for example, the node corresponding to
+        <code>int s = 0;</code>. The matching line in the source editor will be
+        highlighted, making the relationship between graph and code explicit.
+      </p>
+    </div>
+
+    <img src="images/image3.png" alt="Clicking a CFG node highlights the corresponding source line in the editor">
+
+    <p>
+      At the bottom of the screen you will find the DU-Pairs and DU-Paths computed
+      for the current method.
+    </p>
+
+    <img src="images/image4.png" alt="DU-Pairs and DU-Paths panels showing all computed def-use relationships for the method">
+
+    <p>Each entry follows a straightforward notation:</p>
+
+    <div class="example-box">
+      <div class="example-label">DU-Pair format</div>
+      <p><strong>(6, edge(1,3), n@1:21)</strong>
+        <span> — variable n (declared at line 1, col 21), defined at node 6, used at edge (1→3)</span></p>
+      <p><strong>(5, 3, s@2:9)</strong>
+        <span> — variable s (declared at line 2, col 9), defined at node 5, used at node 3</span></p>
+    </div>
+
+    <div class="example-box">
+      <div class="example-label">DU-Path format</div>
+      <p><strong>DU-path(n@1:21): 6 → 5 → 4 → 1 → 3 [edge (1,3)]</strong>
+        <span> — a def-clear path from node 6 to the use of n at edge (1,3)</span></p>
+    </div>
+
+    <!-- 4. MERGE -->
+    <h2 id="merge">4 — Merging linear nodes</h2>
+    <p>
+      Sequences of nodes with no branching can be merged into a single basic block.
+      This simplifies the graph and the DU-pair notation without losing information.
+    </p>
+
+    <div class="step-block">
+      <div class="step-label">Step 3</div>
+      <h3>Enable node merging</h3>
+      <p>
+        Click the <strong>Merge nodes</strong> toggle in the toolbar.
+        Nodes that form an uninterrupted linear sequence will be combined.
+        Their merged name (e.g. <code>[6,5,4]</code>) reflects all original node ids.
+      </p>
+    </div>
+
+    <img src="images/image5.png" alt="CFG after merging linear nodes — consecutive single-successor nodes combined into basic blocks">
+
+    <div class="callout tip">
+      <strong>Tip:</strong> After merging, clicking a merged node highlights all the
+      corresponding source lines. DU-pair and path names update automatically to use
+      the merged node identifiers.
+    </div>
+
+    <!-- 5. TEST PATHS -->
+    <h2 id="paths">5 — Entering and checking test paths</h2>
+    <p>
+      Test paths are entered in the <strong>Test paths</strong> area below the source editor.
+      Each line is one path — a space-separated sequence of node ids ending in <code>exit</code>.
+    </p>
+
+    <div class="step-block">
+      <div class="step-label">Step 4</div>
+      <h3>Type a test path and check coverage</h3>
+      <p>Enter a test path, for example:</p>
+      <pre>6,5,4 1 exit</pre>
+      <p>
+        You may use either the merged node name <code>6,5,4</code> or the individual ids
+        <code>6 5 4</code> — both are accepted. Then click <strong>Check coverage</strong>.
+      </p>
+    </div>
+
+    <img src="images/image8.png" alt="DU-pairs and DU-paths annotated with coverage marks after clicking Check coverage">
+
+    <p>
+      Each DU-pair and DU-path is now prefixed with a coverage mark:
+    </p>
+    <ul style="padding-left:1.4rem; color:var(--muted); font-size:0.95rem; line-height:2; margin-bottom:1rem;">
+      <li><strong style="color:#27ae60;">✓</strong> — requirement satisfied by the test suite</li>
+      <li><strong style="color:#c0392b;">✗</strong> — requirement not yet satisfied</li>
+      <li><strong style="color:var(--teal);">●</strong> — satisfied specifically by the currently selected path</li>
+    </ul>
+    <p>
+      The status bar at the bottom shows a summary, e.g.
+      <em>7/10 DU-Pairs (all-uses) | 7/10 DU-Paths (all-DU-paths)</em>.
+    </p>
+
+    <div class="callout info">
+      <strong>Filtering:</strong> Use the <strong>Filter by variable</strong> dropdown
+      above the panels to focus on the DU-pairs and paths for a single variable.
+      This is especially useful for methods with many variables.
+    </div>
+
+    <!-- 6. CLICKING PATHS -->
+    <h2 id="path-click">6 — Clicking paths and DU entries</h2>
+
+    <div class="step-block">
+      <div class="step-label">Step 5</div>
+      <h3>Visualise a test path on the graph</h3>
+      <p>
+        Click on any line in the <strong>Test paths</strong> area. The corresponding
+        nodes will be highlighted in the graph, giving a visual confirmation of the
+        path you entered.
+      </p>
+    </div>
+
+    <img src="images/image9.png" alt="Clicking a test path line highlights the corresponding nodes in the CFG">
+
+    <div class="step-block">
+      <div class="step-label">Step 6</div>
+      <h3>Import a DU-path as a test path</h3>
+      <p>
+        Click on any entry in the <strong>DU-Paths</strong> panel. The node sequence of
+        that path is automatically added to the Test paths area, ready to be completed
+        and checked. For example, clicking an uncovered path such as:
+      </p>
+      <pre>DU-path(n@1:21): 6,5,4 → 1 → 3,2 [edge (1,3)]</pre>
+      <p>
+        will insert <code>6,5,4 1 3,2</code> into the test path area. You can then
+        extend it to reach <code>exit</code> if desired.
+      </p>
+    </div>
+
+    <img src="images/image10.png" alt="Clicking a DU-path entry adds its node sequence to the test paths area">
+
+    <!-- 7. REPORT -->
+    <h2 id="report">7 — Generating a coverage report</h2>
+
+    <div class="step-block">
+      <div class="step-label">Step 7</div>
+      <h3>Export an HTML report</h3>
+      <p>
+        Once you have test paths for one or more methods, click the <strong>📊 Report</strong>
+        button on the right of the toolbar. A save dialog will appear; choose a location and
+        the report will open automatically in your browser.
+      </p>
+      <p>
+        The report includes, for each method: a coverage summary, the test paths used,
+        and the full annotated list of DU-pairs and DU-paths with ✓/✗ markers.
+        An overall summary across all methods is shown at the top.
+      </p>
+    </div>
+
+    <img src="images/image17.png" alt="HTML coverage report showing DU-pair and DU-path coverage statistics per method">
+
+    <!-- 8. SAVE/LOAD -->
+    <h2 id="save">8 — Saving and loading a project</h2>
+    <p>
+      Closing DFTest without saving will discard all test paths and coverage results.
+      Use the project system to preserve your work.
+    </p>
+
+    <div class="step-block">
+      <div class="step-label">Step 8</div>
+      <h3>Save a session</h3>
+      <p>
+        Click <strong>💾 Save project</strong> in the toolbar. A <code>.cfgproject</code>
+        file will be saved containing the source code, test paths, coverage results,
+        and configuration. Enable <strong>Embed source</strong> in the save dialog if
+        you want the source to travel with the project file rather than referencing an
+        external path.
+      </p>
+      <p>
+        To resume, click <strong>📂 Load project</strong> and select the file.
+        After loading, press <strong>Check coverage</strong> once to restore the
+        coverage annotations.
+      </p>
+    </div>
+
+    <!-- 9. FILES -->
+    <h2 id="files">9 — Working with Java files</h2>
+
+    <div class="step-block">
+      <div class="step-label">Step 9</div>
+      <h3>Open a .java file</h3>
+      <p>
+        Click <strong>Open file…</strong> and select any <code>.java</code> source file.
+        If the class contains multiple methods, use the <strong>method selector dropdown</strong>
+        in the toolbar to switch between them — each has its own CFG, DU-pairs, and
+        test paths.
+      </p>
+    </div>
+
+    <img src="images/image20.png" alt="Method selector dropdown allowing navigation between methods in a multi-method Java class">
+
+    <div class="callout tip">
+      <strong>Tip:</strong> For methods with many nodes, switch to the
+      <strong>Spring layout</strong> in Settings for a cleaner graph.
+      DFTest selects this automatically for larger methods.
+    </div>
+
+    <div class="callout">
+      <strong>Note:</strong> If you edit the source code directly in the editor, the
+      <strong>▶ Analyze</strong> button will turn red, indicating the CFG needs to be
+      rebuilt. Click it to reanalyse — existing test paths will be cleared.
+    </div>
+
+    <!-- 10. TEST FILE -->
+    <h2 id="testfile">10 — Importing traces from a test file</h2>
+    <p>
+      Instead of entering test paths manually, DFTest can run your test code,
+      collect execution traces, and populate the test path area automatically.
+    </p>
+
+    <div class="step-block">
+      <div class="step-label">Step 10</div>
+      <h3>Set a test file and run</h3>
+      <p>
+        Click <strong>📄 Set test file…</strong> in the toolbar. In the dialog, browse
+        to a <code>.java</code> file containing test methods. Tests are identified by:
+      </p>
+      <ul style="padding-left:1.2rem; color:var(--muted); font-size:0.9rem; line-height:1.9; margin:0.5rem 0 0.8rem;">
+        <li>Methods annotated with <code>@Test</code> (JUnit 4/5)</li>
+        <li>Methods whose name starts with <code>test</code></li>
+      </ul>
+      <p>
+        If your test file uses JUnit, click <strong>Add JUnit 5</strong> (or Add JUnit 4)
+        in the dialog — DFTest will search your local Maven repository and add the
+        required jars automatically. If automatic discovery fails, add the jars manually
+        via <strong>Add jar…</strong>, or remove the JUnit imports and annotations from
+        the test file (the <code>test*</code> naming convention will still be recognised).
+      </p>
+    </div>
+
+    <img src="images/image23.png" alt="Set test file dialog with classpath entries and JUnit preset buttons">
+
+    <div class="step-block">
+      <div class="step-label">Step 11</div>
+      <h3>Run the tests</h3>
+      <p>
+        Click <strong>▶ Run tests</strong> in the toolbar. DFTest compiles the
+        instrumented source, executes each test method, and adds the resulting execution
+        traces to the Test paths area. Each path is annotated with the test method name
+        as a comment, e.g.:
+      </p>
+      <pre>20 19 18 17 16 15 14 2 4 13 12 11 5 7 6 5 3 2 1 exit  // testPatternFound</pre>
+      <p>
+        Press <strong>Check coverage</strong> to evaluate the collected traces against
+        the DU criteria.
+      </p>
+    </div>
+
+    <img src="images/image24.png" alt="Test paths area populated with execution traces collected from running the JUnit test file">
+
+    <div class="callout info">
+      <strong>Tip:</strong> Save the project after setting the test file so you
+      do not have to configure the classpath again on the next session.
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /wrap -->
+
+<footer>
+  <a href="dftest.html">← Back to DFTest home</a>
+  &nbsp;&mdash;&nbsp;
+  Getting started guide
+</footer>
+
+</body>
+</html>
