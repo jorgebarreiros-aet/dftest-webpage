@@ -466,7 +466,7 @@
     <a href="#criteria">Coverage criteria</a>
     <a href="#tech">Technology</a>
     <a href="guide.html">Guide</a>
-    <a href="#download" style="color:var(--teal); font-weight:500;">Download &amp; run</a>
+    <a href="downloads.html" style="color:var(--teal); font-weight:500;">Downloads</a>
   </div>
 </nav>
 
@@ -480,7 +480,7 @@
     run your test suite, and see exactly what's covered — all in one desktop tool.
   </p>
   <div class="hero-cta">
-    <a href="dftest.jar" download class="btn btn-primary">⬇ Download DFTest</a>
+    <a href="downloads.html" class="btn btn-primary">⬇ Download DFTest</a>
     <a href="guide.html" class="btn btn-ghost">Getting started guide</a>
     <a href="#features" class="btn btn-ghost">Explore features</a>
   </div>
@@ -626,79 +626,19 @@
 <!-- DOWNLOAD -->
 <div class="section-divider" id="download"><span>Download &amp; run</span></div>
 
-<div class="wrap" style="padding-bottom: 5rem;">
-
-  <!-- Download button -->
-  <div style="text-align:center; margin-bottom: 3rem;">
-    <p style="color:var(--muted); font-size:0.95rem; margin-bottom:0.5rem;">
-      Runs on Windows, macOS and Linux &mdash; requires a <strong style="color:var(--white)">JDK 21</strong> or later.
-    </p>
-    <p style="color:var(--muted); font-size:0.88rem; margin-bottom:1.8rem;">
-      Self-contained fat JAR &mdash; no installation needed.
-    </p>
-    <a href="dftest.jar" download class="btn btn-primary" style="font-size:1.05rem; padding:1rem 2.8rem;">
+<div class="wrap" style="padding-bottom: 5rem; text-align: center;">
+  <p style="color:var(--muted); font-size:0.95rem; margin-bottom:0.5rem;">
+    Runs on Windows, macOS and Linux &mdash; requires a <strong style="color:var(--white)">JDK 21</strong> or later.
+    Self-contained fat JAR &mdash; no installation needed.
+  </p>
+  <div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; margin-top:1.8rem;">
+    <a href="downloads.html" class="btn btn-primary" style="font-size:1.05rem; padding:1rem 2.8rem;">
       ⬇ &nbsp;Download DFTest
     </a>
+    <a href="downloads.html#changelog" class="btn btn-ghost" style="font-size:1.05rem; padding:1rem 2.4rem;">
+      Release history
+    </a>
   </div>
-
-  <!-- Instructions grid -->
-  <div style="display:grid; grid-template-columns: repeat(3,1fr); gap:1.5px;
-              border:1.5px solid var(--border); border-radius:12px; overflow:hidden;">
-
-    <div style="background:var(--bg2); padding:1.8rem; border-right:1px solid var(--border);">
-      <div style="font-family:'IBM Plex Mono',monospace; font-size:0.72rem; color:var(--teal);
-                  letter-spacing:0.14em; text-transform:uppercase; margin-bottom:0.8rem;">Step 1 — Prerequisites</div>
-      <p style="font-size:0.88rem; color:var(--muted); line-height:1.65; margin-bottom:1rem;">
-        Make sure you have a <strong style="color:var(--white)">JDK 21</strong> (or later) installed.
-        To check, run:
-      </p>
-      <pre style="background:var(--bg); border:1px solid var(--border); border-radius:6px;
-                  padding:0.8rem 1rem; font-family:'IBM Plex Mono',monospace;
-                  font-size:0.8rem; color:var(--teal); margin:0;">java -version</pre>
-      <p style="font-size:0.82rem; color:var(--muted); margin-top:0.8rem;">
-        If not installed, download from
-        <a href="https://adoptium.net" target="_blank" style="color:var(--accent);">Adoptium</a>
-        or any JDK 21 distribution.
-      </p>
-    </div>
-
-    <div style="background:var(--bg2); padding:1.8rem; border-right:1px solid var(--border);">
-      <div style="font-family:'IBM Plex Mono',monospace; font-size:0.72rem; color:var(--teal);
-                  letter-spacing:0.14em; text-transform:uppercase; margin-bottom:0.8rem;">Step 2 — Launch</div>
-      <p style="font-size:0.88rem; color:var(--muted); line-height:1.65; margin-bottom:1rem;">
-        Open a terminal in the folder where you saved the JAR and run:
-      </p>
-      <pre style="background:var(--bg); border:1px solid var(--border); border-radius:6px;
-                  padding:0.8rem 1rem; font-family:'IBM Plex Mono',monospace;
-                  font-size:0.8rem; color:var(--teal); margin:0;">java -jar dftest.jar</pre>
-      <p style="font-size:0.82rem; color:var(--muted); margin-top:0.8rem;">
-        On Windows you can also double-click the JAR if your JDK is on the system PATH.
-      </p>
-    </div>
-
-    <div style="background:var(--bg2); padding:1.8rem;">
-      <div style="font-family:'IBM Plex Mono',monospace; font-size:0.72rem; color:var(--teal);
-                  letter-spacing:0.14em; text-transform:uppercase; margin-bottom:0.8rem;">Step 3 — First use</div>
-      <p style="font-size:0.88rem; color:var(--muted); line-height:1.65;">
-        Once the window opens:
-      </p>
-      <ol style="font-size:0.86rem; color:var(--muted); line-height:1.9; padding-left:1.2rem; margin-top:0.5rem;">
-        <li>Paste or open a <strong style="color:var(--white)">.java</strong> file</li>
-        <li>Select a method from the dropdown</li>
-        <li>Click <strong style="color:var(--white)">▶ Analyze</strong></li>
-        <li>Enter test paths and click <strong style="color:var(--white)">Check coverage</strong></li>
-      </ol>
-    </div>
-
-  </div>
-
-  <!-- JUnit note -->
-  <p style="font-size:0.84rem; color:var(--muted); text-align:center; margin-top:1.5rem;">
-    To run test files automatically, use <strong style="color:var(--white)">📄 Set test file…</strong>
-    to point DFTest at a JUnit 5 test class. The built-in preset button will locate
-    JUnit jars in your local Maven repository automatically.
-  </p>
-
 </div>
 
 <!-- FOOTER -->

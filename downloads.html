@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DFTest — Downloads</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Syne:wght@400;600;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  /* ── Reset & base ─────────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:       #f8f9fb;
+    --bg2:      #ffffff;
+    --bg3:      #eef0f3;
+    --teal:     #0e8f78;
+    --teal-dim: #4db8a4;
+    --teal-glow:#0e8f7825;
+    --white:    #1a1f2e;
+    --muted:    #5a6375;
+    --border:   #dde1e8;
+    --accent:   #1a6fd4;
+    --warn:     #b85c00;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: radial-gradient(circle, #0e8f7812 1px, transparent 1px);
+    background-size: 28px 28px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 0 2rem; position: relative; z-index: 1; }
+
+  /* ── NAV ──────────────────────────────────────────── */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: #f8f9fbee;
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+
+  .nav-brand {
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 600;
+    font-size: 1.05rem;
+    color: var(--teal);
+    letter-spacing: -0.02em;
+    text-decoration: none;
+  }
+
+  .nav-links { display: flex; gap: 2rem; }
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 400;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--white); }
+  .nav-links a.active { color: var(--teal); font-weight: 500; }
+
+  /* ── PAGE HEADER ──────────────────────────────────── */
+  .page-header {
+    padding: 6rem 2rem 3rem;
+    max-width: 1100px;
+    margin: 0 auto;
+    position: relative; z-index: 1;
+  }
+
+  .page-eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--teal);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 1.2rem;
+    display: flex; align-items: center; gap: 0.6rem;
+  }
+  .page-eyebrow::before {
+    content: '';
+    display: inline-block;
+    width: 28px; height: 2px;
+    background: var(--teal);
+  }
+
+  .page-header h1 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    margin-bottom: 1rem;
+  }
+
+  .page-header h1 em {
+    font-style: normal;
+    color: var(--teal);
+  }
+
+  .page-header p {
+    font-size: 1.05rem;
+    color: var(--muted);
+    max-width: 540px;
+    line-height: 1.65;
+  }
+
+  /* ── SECTION DIVIDER ──────────────────────────────── */
+  .section-divider {
+    display: flex; align-items: center; gap: 1.5rem;
+    max-width: 1100px; margin: 4rem auto 2.5rem; padding: 0 2rem;
+    position: relative; z-index: 1;
+  }
+  .section-divider::before, .section-divider::after {
+    content: ''; flex: 1; height: 1px; background: var(--border);
+  }
+  .section-divider span {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--teal);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  /* ── CURRENT RELEASE CARD ─────────────────────────── */
+  .release-card {
+    max-width: 1100px; margin: 0 auto; padding: 0 2rem;
+    position: relative; z-index: 1;
+  }
+
+  .release-card-inner {
+    background: var(--bg2);
+    border: 1.5px solid var(--teal);
+    border-radius: 12px;
+    padding: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    flex-wrap: wrap;
+    box-shadow: 0 0 32px var(--teal-glow);
+  }
+
+  .release-info {}
+
+  .release-badge {
+    display: inline-block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    background: var(--teal);
+    color: #fff;
+    padding: 0.25rem 0.7rem;
+    border-radius: 20px;
+    margin-bottom: 0.8rem;
+  }
+
+  .release-info h2 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.6rem;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.3rem;
+  }
+
+  .release-meta {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+  }
+
+  .release-note {
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.6;
+    max-width: 480px;
+  }
+
+  .btn {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.8rem 1.8rem;
+    border-radius: 6px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    font-size: 0.95rem;
+    text-decoration: none;
+    transition: all 0.2s;
+    cursor: pointer; border: none;
+    white-space: nowrap;
+  }
+
+  .btn-primary {
+    background: var(--teal);
+    color: #ffffff;
+  }
+  .btn-primary:hover {
+    background: #0aaa8e;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px var(--teal-glow);
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--white);
+    border: 1px solid var(--border);
+  }
+  .btn-ghost:hover {
+    border-color: var(--teal);
+    color: var(--teal);
+    transform: translateY(-1px);
+  }
+
+  /* ── INSTRUCTIONS ─────────────────────────────────── */
+  .instructions {
+    max-width: 1100px; margin: 2rem auto 0; padding: 0 2rem;
+    position: relative; z-index: 1;
+  }
+
+  .instructions-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5px;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  @media (max-width: 720px) {
+    .instructions-grid { grid-template-columns: 1fr; }
+  }
+
+  .instr-cell {
+    background: var(--bg2);
+    padding: 1.8rem;
+    border-right: 1px solid var(--border);
+  }
+  .instr-cell:last-child { border-right: none; }
+
+  .instr-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--teal);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 0.8rem;
+  }
+
+  .instr-cell p {
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.65;
+    margin-bottom: 1rem;
+  }
+
+  .instr-cell pre {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.8rem 1rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--teal);
+    margin: 0;
+  }
+
+  .instr-cell ol {
+    font-size: 0.86rem;
+    color: var(--muted);
+    line-height: 1.9;
+    padding-left: 1.2rem;
+    margin-top: 0.5rem;
+  }
+
+  .instr-cell ol strong { color: var(--white); }
+
+  /* ── CHANGELOG ────────────────────────────────────── */
+  .changelog {
+    max-width: 1100px; margin: 0 auto; padding: 0 2rem;
+    position: relative; z-index: 1;
+  }
+
+  .changelog-entry {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--bg2);
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+  }
+
+  .changelog-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.4rem 1.8rem;
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+    gap: 0.8rem;
+  }
+
+  .changelog-version {
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--white);
+  }
+
+  .changelog-date {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.76rem;
+    color: var(--muted);
+  }
+
+  .changelog-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.6rem;
+    border-radius: 20px;
+  }
+
+  .tag-current { background: var(--teal); color: #fff; }
+  .tag-older   { background: var(--bg3); color: var(--muted); border: 1px solid var(--border); }
+
+  .changelog-body {
+    padding: 1.4rem 1.8rem;
+  }
+
+  .changelog-section {
+    margin-bottom: 1.2rem;
+  }
+  .changelog-section:last-child { margin-bottom: 0; }
+
+  .changelog-section-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: 0.82rem;
+    color: var(--white);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.5rem;
+  }
+
+  .changelog-section ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .changelog-section ul li {
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.6;
+    padding: 0.2rem 0 0.2rem 1.2rem;
+    position: relative;
+  }
+
+  .changelog-section ul li::before {
+    content: '–';
+    position: absolute;
+    left: 0;
+    color: var(--teal-dim);
+  }
+
+  .changelog-entry-older .changelog-version { color: var(--muted); }
+
+  .changelog-dl-link {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.76rem;
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .changelog-dl-link:hover { text-decoration: underline; }
+
+  /* ── FOOTER ───────────────────────────────────────── */
+  footer {
+    margin-top: 8rem;
+    border-top: 1px solid var(--border);
+    padding: 2.5rem 2rem;
+    text-align: center;
+    position: relative; z-index: 1;
+  }
+
+  footer p { font-size: 0.84rem; color: var(--muted); }
+  footer a { color: var(--teal); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .page-header { animation: fadeUp 0.6s ease both; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-brand" href="index.html">DFTest</a>
+  <div class="nav-links">
+    <a href="index.html#features">Features</a>
+    <a href="index.html#how-it-works">How it works</a>
+    <a href="index.html#criteria">Coverage criteria</a>
+    <a href="index.html#tech">Technology</a>
+    <a href="guide.html">Guide</a>
+    <a href="downloads.html" class="active">Downloads</a>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="page-eyebrow">DFTest</div>
+  <h1>Downloads &amp; <em>Release history</em></h1>
+  <p>Self-contained fat JAR — no installation needed beyond a JDK 21.</p>
+</div>
+
+<!-- CURRENT RELEASE -->
+<div class="section-divider"><span>Current release</span></div>
+
+<div class="release-card">
+  <div class="release-card-inner">
+    <div class="release-info">
+      <div class="release-badge">Latest</div>
+      <h2>DFTest 1.2</h2>
+      <div class="release-meta">Released April 2026 &nbsp;·&nbsp; dftest-1.2-all.jar &nbsp;·&nbsp; requires JDK 21+</div>
+      <p class="release-note">
+        Adds hierarchical satisfaction criteria (simple / sidetrip / detour),
+        multi-method test running, graph overlay zoom and node-size controls,
+        and a Spoon compliance fix that resolves instrumentation errors with
+        Java 16+ <code>record</code> declarations.
+      </p>
+    </div>
+    <a href="dftest-1.2-all.jar" download class="btn btn-primary" style="font-size:1.05rem; padding:1rem 2.4rem;">
+      ⬇ &nbsp;Download v1.2
+    </a>
+  </div>
+</div>
+
+<!-- HOW TO RUN -->
+<div class="instructions" style="margin-top:2rem;">
+  <div class="instructions-grid">
+    <div class="instr-cell">
+      <div class="instr-label">Step 1 — Prerequisites</div>
+      <p>Make sure you have a <strong style="color:var(--white)">JDK 21</strong> (or later) installed. To check, run:</p>
+      <pre>java -version</pre>
+      <p style="margin-top:0.8rem; margin-bottom:0;">
+        If not installed, download from
+        <a href="https://adoptium.net" target="_blank" style="color:var(--accent);">Adoptium</a>
+        or any JDK 21 distribution.
+      </p>
+    </div>
+    <div class="instr-cell">
+      <div class="instr-label">Step 2 — Launch</div>
+      <p>Open a terminal in the folder where you saved the JAR and run:</p>
+      <pre>java -jar dftest-1.2-all.jar</pre>
+      <p style="margin-top:0.8rem; margin-bottom:0;">
+        On Windows you can also double-click the JAR if your JDK is on the system PATH.
+      </p>
+    </div>
+    <div class="instr-cell">
+      <div class="instr-label">Step 3 — First use</div>
+      <p>Once the window opens:</p>
+      <ol>
+        <li>Paste or open a <strong>.java</strong> file</li>
+        <li>Select a method from the dropdown</li>
+        <li>Click <strong>▶ Analyze</strong></li>
+        <li>Enter test paths and click <strong>Check coverage</strong></li>
+      </ol>
+    </div>
+  </div>
+  <p style="font-size:0.84rem; color:var(--muted); text-align:center; margin-top:1.2rem;">
+    To run test files automatically, use <strong style="color:var(--white)">📄 Set test file…</strong>
+    to point DFTest at a JUnit 5 test class. The built-in preset button will locate
+    JUnit jars in your local Maven repository automatically.
+  </p>
+</div>
+
+<!-- CHANGELOG -->
+<div class="section-divider" id="changelog"><span>Release history</span></div>
+
+<div class="changelog">
+
+  <!-- v1.2 -->
+  <div class="changelog-entry">
+    <div class="changelog-header">
+      <div style="display:flex; align-items:center; gap:1rem;">
+        <span class="changelog-version">Version 1.2</span>
+        <span class="changelog-tag tag-current">Current</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:1.5rem; flex-wrap:wrap;">
+        <span class="changelog-date">April 2026</span>
+        <a href="dftest-1.2-all.jar" download class="changelog-dl-link">⬇ dftest-1.2-all.jar</a>
+      </div>
+    </div>
+    <div class="changelog-body">
+      <div class="changelog-section">
+        <div class="changelog-section-title">New features</div>
+        <ul>
+          <li><strong style="color:var(--white)">Hierarchical satisfaction criteria</strong> — coverage is now evaluated at three levels: simple tour (✓ ), tour with sidetrips (⍻ ), and tour with detours ((⍻)). The status bar, DU-pairs/paths panels, and HTML report all show mode-aware marks and counts. Sidetrip and detour sections are omitted when they add no coverage over the previous level.</li>
+          <li><strong style="color:var(--white)">Multi-method test running</strong> — running a test file now instruments and collects traces for all methods in the source in a single operation. A progress indicator in the status bar shows which method is currently being processed.</li>
+          <li><strong style="color:var(--white)">Graph overlay controls</strong> — zoom (+ − ⟳) and node size (◉− ◉+) buttons are now shown directly as an overlay on the graph panel. Node size is also still configurable via Settings.</li>
+        </ul>
+      </div>
+      <div class="changelog-section">
+        <div class="changelog-section-title">Bug fixes</div>
+        <ul>
+          <li><strong style="color:var(--white)">Spoon compliance level</strong> — the Spoon launcher was not configured with a Java source compliance level, causing <code>record</code> declarations (Java 16+) to be misparsed as method declarations. This produced spurious entries in the method selector and incorrect source-position reporting that caused instrumentation calls to land inside record parameter lists. Fixed by setting compliance level 17.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div style="max-width:1100px; margin:0 auto; display:flex; flex-wrap:wrap;
+              justify-content:space-between; align-items:flex-start; gap:2rem;
+              padding-bottom:2rem; border-bottom:1px solid var(--border); margin-bottom:1.5rem;">
+    <div>
+      <div style="font-family:'IBM Plex Mono',monospace; font-weight:600;
+                  font-size:1rem; color:var(--teal); margin-bottom:0.5rem;">DFTest</div>
+      <p style="font-size:0.85rem; color:var(--muted); max-width:320px; line-height:1.6;">
+        An interactive dataflow testing tool for Java,<br>
+        built for education and research.
+      </p>
+    </div>
+    <div>
+      <div style="font-family:'Syne',sans-serif; font-weight:600; font-size:0.85rem;
+                  color:var(--white); margin-bottom:0.7rem; letter-spacing:0.04em;">Author</div>
+      <p style="font-size:0.88rem; color:var(--muted); line-height:1.8;">
+        <strong style="color:var(--white);">Jorge Barreiros</strong><br>
+        Prof. Adjunto / Instituto Superior de Engenharia de Coimbra<br>
+        Polytechnic University of Coimbra
+      </p>
+    </div>
+    <div>
+      <div style="font-family:'Syne',sans-serif; font-weight:600; font-size:0.85rem;
+                  color:var(--white); margin-bottom:0.7rem; letter-spacing:0.04em;">Contact</div>
+      <p style="font-size:0.88rem; color:var(--muted); line-height:1.8;">
+        ✉ <a href="mailto:jmsousa@isec.pt" style="color:var(--accent);">jmsousa@isec.pt</a><br>
+        🔗 <a href="https://www2.isec.pt/~jmsousa" target="_blank" style="color:var(--accent);">www2.isec.pt/~jmsousa</a><br>
+        📍 Coimbra, Portugal
+      </p>
+    </div>
+  </div>
+  <p style="font-size:0.8rem; color:var(--muted);">
+    &copy; 2026 Jorge Barreiros &mdash; DFTest is free for academic and educational use.
+  </p>
+</footer>
+
+</body>
+</html>
