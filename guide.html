@@ -313,7 +313,7 @@
   <div class="nav-links">
     <a href="index.html">Home</a>
     <a href="index.html#features">Features</a>
-    <a href="index.html#download">Download</a>
+    <a href="downloads.html">Downloads</a>
     <a href="#" style="color:var(--teal);">Guide</a>
   </div>
 </nav>
@@ -379,9 +379,9 @@
       <div class="step-label">Step 1</div>
       <h3>Launch DFTest</h3>
       <p>
-        Download <code>dftest.jar</code> and run it from a terminal:
+        Download the latest JAR from the <a href="downloads.html">Downloads</a> page and run it from a terminal:
       </p>
-      <pre>java -jar dftest.jar</pre>
+      <pre>java -jar dftest-1.2-all.jar</pre>
       <p>
         The GUI will open showing a default Java method already loaded and analysed.
       </p>
@@ -490,13 +490,16 @@
       Each DU-pair and DU-path is now prefixed with a coverage mark:
     </p>
     <ul style="padding-left:1.4rem; color:var(--muted); font-size:0.95rem; line-height:2; margin-bottom:1rem;">
-      <li><strong style="color:#27ae60;">✓</strong> — requirement satisfied by the test suite</li>
-      <li><strong style="color:#c0392b;">✗</strong> — requirement not yet satisfied</li>
+      <li><strong style="color:#27ae60;">✓ </strong> — satisfied by simple tour (exact subpath)</li>
+      <li><strong style="color:var(--teal);">⍻ </strong> — satisfied via sidetrip (test may loop between required nodes)</li>
+      <li><strong style="color:var(--teal);">(⍻)</strong> — satisfied via detour (required nodes appear as ordered subsequence)</li>
+      <li><strong style="color:#c0392b;">✗ </strong> — requirement not yet satisfied</li>
       <li><strong style="color:var(--teal);">●</strong> — satisfied specifically by the currently selected path</li>
     </ul>
     <p>
-      The status bar at the bottom shows a summary, e.g.
-      <em>7/10 DU-Pairs (all-uses) | 7/10 DU-Paths (all-DU-paths)</em>.
+      The status bar shows a hierarchical summary, e.g.
+      <em>Simple: 7/10 pairs, 7/10 paths | +Sidetrip: 1/10, 1/10</em>.
+      Sidetrip and detour sections are omitted when they add no coverage over the previous level.
     </p>
 
     <div class="callout info">
@@ -642,10 +645,12 @@
       <div class="step-label">Step 11</div>
       <h3>Run the tests</h3>
       <p>
-        Click <strong>▶ Run tests</strong> in the toolbar. DFTest compiles the
-        instrumented source, executes each test method, and adds the resulting execution
-        traces to the Test paths area. Each path is annotated with the test method name
-        as a comment, e.g.:
+        Click <strong>▶ Run tests</strong> in the toolbar. DFTest instruments and runs
+        the test suite once for <em>every method</em> in the source, collecting execution
+        traces for all of them in a single pass. The status bar shows progress as each
+        method is processed. Traces are added to the Test paths area for whichever method
+        is currently displayed, and stored for all others. Each path is annotated with
+        the test method name as a comment, e.g.:
       </p>
       <pre>20 19 18 17 16 15 14 2 4 13 12 11 5 7 6 5 3 2 1 exit  // testPatternFound</pre>
       <p>
