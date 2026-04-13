@@ -443,17 +443,17 @@
   <div class="release-card-inner">
     <div class="release-info">
       <div class="release-badge">Latest</div>
-      <h2>DFTest 1.2</h2>
-      <div class="release-meta">Released April 2026 &nbsp;·&nbsp; dftest-1.2-all.jar &nbsp;·&nbsp; requires JDK 21+</div>
+      <h2>DFTest 1.3</h2>
+      <div class="release-meta">Released April 2026 &nbsp;·&nbsp; dftest-1.3-all.jar &nbsp;·&nbsp; requires JDK 21+</div>
       <p class="release-note">
-        Adds hierarchical satisfaction criteria (simple / sidetrip / detour),
-        multi-method test running, graph overlay zoom and node-size controls,
-        and a Spoon compliance fix that resolves instrumentation errors with
-        Java 16+ <code>record</code> declarations.
+        Adds a test × requirement coverage matrix with redundancy detection,
+        minimal cover and combined-coverage column; automatic coverage
+        evaluation whenever test paths are loaded from any source; and
+        per-requirement hierarchical satisfaction fallback in the matrix.
       </p>
     </div>
-    <a href="dftest-1.2-all.jar" download class="btn btn-primary" style="font-size:1.05rem; padding:1rem 2.4rem;">
-      ⬇ &nbsp;Download v1.2
+    <a href="dftest-1.3-all.jar" download class="btn btn-primary" style="font-size:1.05rem; padding:1rem 2.4rem;">
+      ⬇ &nbsp;Download v1.3
     </a>
   </div>
 </div>
@@ -474,7 +474,7 @@
     <div class="instr-cell">
       <div class="instr-label">Step 2 — Launch</div>
       <p>Open a terminal in the folder where you saved the JAR and run:</p>
-      <pre>java -jar dftest-1.2-all.jar</pre>
+      <pre>java -jar dftest-1.3-all.jar</pre>
       <p style="margin-top:0.8rem; margin-bottom:0;">
         On Windows you can also double-click the JAR if your JDK is on the system PATH.
       </p>
@@ -484,9 +484,9 @@
       <p>Once the window opens:</p>
       <ol>
         <li>Paste or open a <strong>.java</strong> file</li>
-        <li>Select a method from the dropdown</li>
-        <li>Click <strong>▶ Analyze</strong></li>
-        <li>Enter test paths and click <strong>Check coverage</strong></li>
+        <li>Click <strong>▶ Analyze</strong> to build the CFG</li>
+        <li>Enter test paths — coverage is evaluated automatically</li>
+        <li>Use <strong>📊 Matrix</strong> to explore test redundancy and minimal cover</li>
       </ol>
     </div>
   </div>
@@ -502,12 +502,44 @@
 
 <div class="changelog">
 
-  <!-- v1.2 -->
+  <!-- v1.3 -->
   <div class="changelog-entry">
     <div class="changelog-header">
       <div style="display:flex; align-items:center; gap:1rem;">
-        <span class="changelog-version">Version 1.2</span>
+        <span class="changelog-version">Version 1.3</span>
         <span class="changelog-tag tag-current">Current</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:1.5rem; flex-wrap:wrap;">
+        <span class="changelog-date">April 2026</span>
+        <a href="dftest-1.3-all.jar" download class="changelog-dl-link">⬇ dftest-1.3-all.jar</a>
+      </div>
+    </div>
+    <div class="changelog-body">
+      <div class="changelog-section">
+        <div class="changelog-section-title">New features</div>
+        <ul>
+          <li><strong style="color:var(--white)">Coverage matrix</strong> — a new <strong>📊 Matrix</strong> button opens a test × requirement table showing exactly which tests cover which DU-pairs and DU-paths. Columns can be marked as redundant or as part of a greedy minimal cover. A <em>Combined</em> column (shown when minimal cover is active) displays the union of coverage achieved by the cover subset.</li>
+          <li><strong style="color:var(--white)">Hierarchical satisfaction preference</strong> — within the coverage matrix, a <em>Preference</em> selector (Direct / Sidetrips / Detours) controls which tour quality counts as satisfying a requirement. The evaluation is per-requirement with fallback: a lower-quality tour is only accepted when no better tour exists for that specific requirement. Cells that were covered but fall below the effective threshold for their row are shown dimmed.</li>
+          <li><strong style="color:var(--white)">Method selector in matrix dialog</strong> — the coverage matrix can be switched to any other method in the source without closing the dialog.</li>
+          <li><strong style="color:var(--white)">Automatic coverage evaluation</strong> — coverage is now computed immediately whenever test paths arrive from any source (method switch, test execution, path click, or project load). The <strong>Check coverage</strong> button is only needed after manually editing the path field.</li>
+          <li><strong style="color:var(--white)">✗ marks on empty test suite</strong> — DU-pairs and DU-paths panels now show ✗ for all requirements when the path field is empty and coverage has been checked, rather than leaving the panel blank.</li>
+        </ul>
+      </div>
+      <div class="changelog-section">
+        <div class="changelog-section-title">Bug fixes</div>
+        <ul>
+          <li><strong style="color:var(--white)">Spoon 11 / Java 21 upgrade</strong> — upgraded Spoon to 11.3.0 and set compliance level 21. Resolves <code>PartialSourcePosition</code> exceptions that occurred when analysing methods containing local <code>record</code> declarations or synthetic elements. Local records and comments are now silently skipped in the CFG builder.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- v1.2 -->
+  <div class="changelog-entry changelog-entry-older">
+    <div class="changelog-header">
+      <div style="display:flex; align-items:center; gap:1rem;">
+        <span class="changelog-version">Version 1.2</span>
+        <span class="changelog-tag tag-older">Older</span>
       </div>
       <div style="display:flex; align-items:center; gap:1.5rem; flex-wrap:wrap;">
         <span class="changelog-date">April 2026</span>
@@ -518,15 +550,10 @@
       <div class="changelog-section">
         <div class="changelog-section-title">New features</div>
         <ul>
-          <li><strong style="color:var(--white)">Hierarchical satisfaction criteria</strong> — coverage is now evaluated at three levels: simple tour (✓ ), tour with sidetrips (⍻ ), and tour with detours ((⍻)). The status bar, DU-pairs/paths panels, and HTML report all show mode-aware marks and counts. Sidetrip and detour sections are omitted when they add no coverage over the previous level.</li>
-          <li><strong style="color:var(--white)">Multi-method test running</strong> — running a test file now instruments and collects traces for all methods in the source in a single operation. A progress indicator in the status bar shows which method is currently being processed.</li>
-          <li><strong style="color:var(--white)">Graph overlay controls</strong> — zoom (+ − ⟳) and node size (◉− ◉+) buttons are now shown directly as an overlay on the graph panel. Node size is also still configurable via Settings.</li>
-        </ul>
-      </div>
-      <div class="changelog-section">
-        <div class="changelog-section-title">Bug fixes</div>
-        <ul>
-          <li><strong style="color:var(--white)">Spoon compliance level</strong> — the Spoon launcher was not configured with a Java source compliance level, causing <code>record</code> declarations (Java 16+) to be misparsed as method declarations. This produced spurious entries in the method selector and incorrect source-position reporting that caused instrumentation calls to land inside record parameter lists. Fixed by setting compliance level 17.</li>
+          <li><strong style="color:var(--white)">Hierarchical satisfaction criteria</strong> — coverage evaluated at three levels: simple tour (✓), sidetrip (⍻), and detour ((⍻)). Status bar, panels, and HTML report show mode-aware marks and counts.</li>
+          <li><strong style="color:var(--white)">Multi-method test running</strong> — running a test file instruments all methods in a single pass; a progress indicator shows which method is being processed.</li>
+          <li><strong style="color:var(--white)">Graph overlay controls</strong> — zoom and node-size buttons shown directly on the graph panel.</li>
+          <li><strong style="color:var(--white)">Spoon compliance level</strong> — set to 17, fixing misparse of Java 16+ <code>record</code> declarations.</li>
         </ul>
       </div>
     </div>

@@ -341,6 +341,7 @@
         <li><a href="#merge">Merging linear nodes</a></li>
         <li><a href="#paths">Entering and checking test paths</a></li>
         <li><a href="#path-click">Clicking paths and DU entries</a></li>
+        <li><a href="#matrix">Coverage matrix</a></li>
         <li><a href="#report">Generating a coverage report</a></li>
         <li><a href="#save">Saving and loading a project</a></li>
         <li><a href="#files">Working with Java files</a></li>
@@ -381,7 +382,7 @@
       <p>
         Download the latest JAR from the <a href="downloads.html">Downloads</a> page and run it from a terminal:
       </p>
-      <pre>java -jar dftest-1.2-all.jar</pre>
+      <pre>java -jar dftest-1.3-all.jar</pre>
       <p>
         The GUI will open showing a default Java method already loaded and analysed.
       </p>
@@ -475,12 +476,14 @@
 
     <div class="step-block">
       <div class="step-label">Step 4</div>
-      <h3>Type a test path and check coverage</h3>
+      <h3>Type a test path</h3>
       <p>Enter a test path, for example:</p>
       <pre>6,5,4 1 exit</pre>
       <p>
         You may use either the merged node name <code>6,5,4</code> or the individual ids
-        <code>6 5 4</code> — both are accepted. Then click <strong>Check coverage</strong>.
+        <code>6 5 4</code> — both are accepted. Coverage is evaluated automatically as
+        soon as you finish typing and move focus away, or press <strong>Check coverage</strong>
+        to evaluate immediately.
       </p>
     </div>
 
@@ -540,11 +543,57 @@
 
     <img src="images/image10.png" alt="Clicking a DU-path entry adds its node sequence to the test paths area">
 
-    <!-- 7. REPORT -->
-    <h2 id="report">7 — Generating a coverage report</h2>
+    <!-- 7. COVERAGE MATRIX -->
+    <h2 id="matrix">7 — Coverage matrix</h2>
+    <p>
+      The coverage matrix gives a structured overview of which tests cover which
+      requirements, and helps identify redundant tests or a minimal test subset.
+    </p>
 
     <div class="step-block">
       <div class="step-label">Step 7</div>
+      <h3>Open the coverage matrix</h3>
+      <p>
+        Click <strong>📊 Matrix</strong> in the toolbar. A non-modal dialog opens with
+        two tabs — one for DU-pairs, one for DU-paths — each showing a test × requirement
+        table. Rows are requirements; columns are individual test paths.
+      </p>
+      <p>
+        Use the <strong>method selector</strong> at the top of the dialog to switch to
+        any other method in the source without closing the window.
+      </p>
+    </div>
+
+    <p>The toolbar inside the matrix panel offers two overlays and a preference selector:</p>
+
+    <ul style="padding-left:1.4rem; color:var(--muted); font-size:0.95rem; line-height:2; margin-bottom:1rem;">
+      <li><strong style="color:var(--white);">⚠ Mark redundant</strong> — highlights tests whose coverage is a strict subset of the remaining tests. A test that covers nothing is also considered redundant.</li>
+      <li><strong style="color:var(--white);">★ Minimal cover</strong> — highlights a greedy minimal subset of tests that together cover every coverable requirement. When active, a <strong>Combined</strong> column appears at the right edge showing the union of coverage achieved by this subset alone, making it easy to see what the reduced suite achieves.</li>
+    </ul>
+
+    <p>
+      The <strong>Preference</strong> buttons control which tour quality counts as
+      satisfying a requirement — evaluated <em>per requirement</em> with hierarchical
+      fallback:
+    </p>
+
+    <ul style="padding-left:1.4rem; color:var(--muted); font-size:0.95rem; line-height:2; margin-bottom:1rem;">
+      <li><strong style="color:#1e7e34;">✓ Direct</strong> — a direct (simple) tour is required. If no test can tour the requirement directly, a sidetrip tour is accepted as a fallback; if that too is impossible, a detour is accepted.</li>
+      <li><strong style="color:#0e6b5a;">⍻ Sidetrips</strong> — a direct or sidetrip tour counts; a detour is only accepted when neither is achievable for that requirement.</li>
+      <li><strong style="color:#4db8a4;">(⍻) Detours</strong> — any tour counts regardless of quality (most relaxed).</li>
+    </ul>
+
+    <p>
+      Cells that were covered but fall below a requirement's effective threshold are
+      shown <strong>dimmed</strong> — the tour occurred, but a better-quality tour
+      exists for that requirement so this one is not needed.
+    </p>
+
+    <!-- 8. REPORT -->
+    <h2 id="report">8 — Generating a coverage report</h2>
+
+    <div class="step-block">
+      <div class="step-label">Step 8</div>
       <h3>Export an HTML report</h3>
       <p>
         Once you have test paths for one or more methods, click the <strong>📊 Report</strong>
@@ -561,14 +610,14 @@
     <img src="images/image17.png" alt="HTML coverage report showing DU-pair and DU-path coverage statistics per method">
 
     <!-- 8. SAVE/LOAD -->
-    <h2 id="save">8 — Saving and loading a project</h2>
+    <h2 id="save">9 — Saving and loading a project</h2>
     <p>
       Closing DFTest without saving will discard all test paths and coverage results.
       Use the project system to preserve your work.
     </p>
 
     <div class="step-block">
-      <div class="step-label">Step 8</div>
+      <div class="step-label">Step 9</div>
       <h3>Save a session</h3>
       <p>
         Click <strong>💾 Save project</strong> in the toolbar. A <code>.cfgproject</code>
@@ -579,16 +628,15 @@
       </p>
       <p>
         To resume, click <strong>📂 Load project</strong> and select the file.
-        After loading, press <strong>Check coverage</strong> once to restore the
-        coverage annotations.
+        Coverage annotations are restored automatically on load.
       </p>
     </div>
 
     <!-- 9. FILES -->
-    <h2 id="files">9 — Working with Java files</h2>
+    <h2 id="files">10 — Working with Java files</h2>
 
     <div class="step-block">
-      <div class="step-label">Step 9</div>
+      <div class="step-label">Step 10</div>
       <h3>Open a .java file</h3>
       <p>
         Click <strong>Open file…</strong> and select any <code>.java</code> source file.
@@ -613,14 +661,14 @@
     </div>
 
     <!-- 10. TEST FILE -->
-    <h2 id="testfile">10 — Importing traces from a test file</h2>
+    <h2 id="testfile">11 — Importing traces from a test file</h2>
     <p>
       Instead of entering test paths manually, DFTest can run your test code,
       collect execution traces, and populate the test path area automatically.
     </p>
 
     <div class="step-block">
-      <div class="step-label">Step 10</div>
+      <div class="step-label">Step 11</div>
       <h3>Set a test file and run</h3>
       <p>
         Click <strong>📄 Set test file…</strong> in the toolbar. In the dialog, browse
@@ -642,7 +690,7 @@
     <img src="images/image23.png" alt="Set test file dialog with classpath entries and JUnit preset buttons">
 
     <div class="step-block">
-      <div class="step-label">Step 11</div>
+      <div class="step-label">Step 12</div>
       <h3>Run the tests</h3>
       <p>
         Click <strong>▶ Run tests</strong> in the toolbar. DFTest instruments and runs
@@ -654,8 +702,8 @@
       </p>
       <pre>20 19 18 17 16 15 14 2 4 13 12 11 5 7 6 5 3 2 1 exit  // testPatternFound</pre>
       <p>
-        Press <strong>Check coverage</strong> to evaluate the collected traces against
-        the DU criteria.
+        Coverage is evaluated automatically once the traces are loaded.
+        Use <strong>Check coverage</strong> to re-evaluate if you edit the paths manually.
       </p>
     </div>
 
