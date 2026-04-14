@@ -443,17 +443,17 @@
   <div class="release-card-inner">
     <div class="release-info">
       <div class="release-badge">Latest</div>
-      <h2>DFTest 1.3</h2>
-      <div class="release-meta">Released April 2026 &nbsp;·&nbsp; dftest-1.3-all.jar &nbsp;·&nbsp; requires JDK 21+</div>
+      <h2>DFTest 1.4</h2>
+      <div class="release-meta">Released April 2026 &nbsp;·&nbsp; dftest-1.4-all.jar &nbsp;·&nbsp; requires JDK 21+</div>
       <p class="release-note">
-        Adds a test × requirement coverage matrix with redundancy detection,
-        minimal cover and combined-coverage column; automatic coverage
-        evaluation whenever test paths are loaded from any source; and
-        per-requirement hierarchical satisfaction fallback in the matrix.
+        Introduces a folder-browser dialog for managing source files, support for
+        loading multiple test files simultaneously, and several instrumentation
+        reliability fixes including Allman-style brace handling and a name-collision
+        fix for local variables named <code>cfg</code>.
       </p>
     </div>
-    <a href="dftest-1.3-all.jar" download class="btn btn-primary" style="font-size:1.05rem; padding:1rem 2.4rem;">
-      ⬇ &nbsp;Download v1.3
+    <a href="dftest-1.4-all.jar" download class="btn btn-primary" style="font-size:1.05rem; padding:1rem 2.4rem;">
+      ⬇ &nbsp;Download v1.4
     </a>
   </div>
 </div>
@@ -474,7 +474,7 @@
     <div class="instr-cell">
       <div class="instr-label">Step 2 — Launch</div>
       <p>Open a terminal in the folder where you saved the JAR and run:</p>
-      <pre>java -jar dftest-1.3-all.jar</pre>
+      <pre>java -jar dftest-1.4-all.jar</pre>
       <p style="margin-top:0.8rem; margin-bottom:0;">
         On Windows you can also double-click the JAR if your JDK is on the system PATH.
       </p>
@@ -483,7 +483,7 @@
       <div class="instr-label">Step 3 — First use</div>
       <p>Once the window opens:</p>
       <ol>
-        <li>Paste or open a <strong>.java</strong> file</li>
+        <li>Click <strong>📂 Sources…</strong> to browse and load <strong>.java</strong> files</li>
         <li>Click <strong>▶ Analyze</strong> to build the CFG</li>
         <li>Enter test paths — coverage is evaluated automatically</li>
         <li>Use <strong>📊 Matrix</strong> to explore test redundancy and minimal cover</li>
@@ -491,8 +491,8 @@
     </div>
   </div>
   <p style="font-size:0.84rem; color:var(--muted); text-align:center; margin-top:1.2rem;">
-    To run test files automatically, use <strong style="color:var(--white)">📄 Set test file…</strong>
-    to point DFTest at a JUnit 5 test class. The built-in preset button will locate
+    To run tests automatically, use <strong style="color:var(--white)">📄 Set test file…</strong>
+    to load one or more JUnit 5 test classes. The built-in preset button will locate
     JUnit jars in your local Maven repository automatically.
   </p>
 </div>
@@ -502,12 +502,45 @@
 
 <div class="changelog">
 
-  <!-- v1.3 -->
+  <!-- v1.4 -->
   <div class="changelog-entry">
     <div class="changelog-header">
       <div style="display:flex; align-items:center; gap:1rem;">
-        <span class="changelog-version">Version 1.3</span>
+        <span class="changelog-version">Version 1.4</span>
         <span class="changelog-tag tag-current">Current</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:1.5rem; flex-wrap:wrap;">
+        <span class="changelog-date">April 2026</span>
+        <a href="dftest-1.4-all.jar" download class="changelog-dl-link">⬇ dftest-1.4-all.jar</a>
+      </div>
+    </div>
+    <div class="changelog-body">
+      <div class="changelog-section">
+        <div class="changelog-section-title">New features</div>
+        <ul>
+          <li><strong style="color:var(--white)">Source files dialog</strong> — the "Open file…" and "Add files…" toolbar buttons are replaced by a single <strong>📂 Sources…</strong> button that opens a split-panel folder browser. The left panel navigates the filesystem; the right panel shows the currently loaded files. Supports adding individual files, all <code>.java</code> files in a folder, or recursively scanning a folder tree. Files can be removed individually or all at once.</li>
+          <li><strong style="color:var(--white)">Multiple test files</strong> — the test file dialog now manages a list of JUnit test files rather than a single file. All loaded test classes are instrumented and run together in one pass; traces from each test method are attributed correctly regardless of which class they belong to.</li>
+          <li><strong style="color:var(--white)">Test file folder scan</strong> — the test file dialog gains an "Add folder…" button that recursively scans a directory for <code>.java</code> files, mirroring the source file dialog.</li>
+        </ul>
+      </div>
+      <div class="changelog-section">
+        <div class="changelog-section-title">Bug fixes</div>
+        <ul>
+          <li><strong style="color:var(--white)">Allman-style brace instrumentation</strong> — tracer <code>enter()</code> and <code>visit()</code> calls are now correctly inserted <em>inside</em> the method body when opening braces appear on their own line, preventing misplaced calls that caused compilation failures on Allman-formatted source.</li>
+          <li><strong style="color:var(--white)">Local variable name collision</strong> — moved the internal tracer class to package <code>cfgtracer</code>. Previously, user source containing a local variable named <code>cfg</code> (e.g., a method parameter <code>AnalysisConfig cfg</code>) caused the instrumented call <code>cfg.CFGTracer.visit(…)</code> to be interpreted as member access, producing a compilation error.</li>
+          <li><strong style="color:var(--white)">Self-instrumentation guard</strong> — files loaded simultaneously as both source and test are no longer accidentally instrumented, preventing degenerate compilation loops.</li>
+          <li><strong style="color:var(--white)">Instrumentation errors to console</strong> — compilation errors from the instrumentation step are now printed to standard error with a full stack trace, rather than shown in a modal dialog that truncated long messages.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- v1.3 -->
+  <div class="changelog-entry changelog-entry-older">
+    <div class="changelog-header">
+      <div style="display:flex; align-items:center; gap:1rem;">
+        <span class="changelog-version">Version 1.3</span>
+        <span class="changelog-tag tag-older">Older</span>
       </div>
       <div style="display:flex; align-items:center; gap:1.5rem; flex-wrap:wrap;">
         <span class="changelog-date">April 2026</span>
