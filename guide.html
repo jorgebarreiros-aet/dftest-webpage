@@ -382,7 +382,7 @@
       <p>
         Download the latest JAR from the <a href="downloads.html">Downloads</a> page and run it from a terminal:
       </p>
-      <pre>java -jar dftest-1.3-all.jar</pre>
+      <pre>java -jar dftest-1.4-all.jar</pre>
       <p>
         The GUI will open showing a default Java method already loaded and analysed.
       </p>
@@ -637,12 +637,20 @@
 
     <div class="step-block">
       <div class="step-label">Step 10</div>
-      <h3>Open a .java file</h3>
+      <h3>Load source files</h3>
       <p>
-        Click <strong>Open file…</strong> and select any <code>.java</code> source file.
-        If the class contains multiple methods, use the <strong>method selector dropdown</strong>
-        in the toolbar to switch between them — each has its own CFG, DU-pairs, and
-        test paths.
+        Click <strong>📂 Sources…</strong> to open the source file manager. The left
+        panel is a lightweight folder browser — double-click a directory to enter it,
+        double-click a <code>.java</code> file to add it, or use <strong>Add folder</strong>
+        / <strong>Add recursively</strong> to add all files in a directory tree at once.
+        The right panel shows the currently loaded files; files can be removed individually
+        or all cleared at once. Click <strong>OK</strong> to confirm — the analysis runs
+        automatically.
+      </p>
+      <p>
+        If the loaded classes contain multiple methods, use the <strong>method selector
+        dropdown</strong> in the toolbar to switch between them — each has its own CFG,
+        DU-pairs, and test paths.
       </p>
     </div>
 
@@ -669,10 +677,12 @@
 
     <div class="step-block">
       <div class="step-label">Step 11</div>
-      <h3>Set a test file and run</h3>
+      <h3>Set test files and run</h3>
       <p>
-        Click <strong>📄 Set test file…</strong> in the toolbar. In the dialog, browse
-        to a <code>.java</code> file containing test methods. Tests are identified by:
+        Click <strong>📄 Set test file…</strong> in the toolbar. In the dialog, add one
+        or more <code>.java</code> files containing test methods — use <strong>Add file(s)…</strong>
+        to pick individual files or <strong>Add folder…</strong> to scan a directory recursively.
+        Tests are identified by:
       </p>
       <ul style="padding-left:1.2rem; color:var(--muted); font-size:0.9rem; line-height:1.9; margin:0.5rem 0 0.8rem;">
         <li>Methods annotated with <code>@Test</code> (JUnit 4/5)</li>
