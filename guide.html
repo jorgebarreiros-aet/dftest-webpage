@@ -346,6 +346,7 @@
         <li><a href="#save">Saving and loading a project</a></li>
         <li><a href="#files">Working with Java files</a></li>
         <li><a href="#testfile">Importing traces from a test file</a></li>
+        <li><a href="#interprocedural">Interprocedural analysis</a></li>
       </ol>
     </div>
 
@@ -365,6 +366,7 @@
       <li>Identify all <strong>DU-pairs</strong> and <strong>DU-paths</strong></li>
       <li>Determine the test paths traversed by a provided test file</li>
       <li>Highlight which requirements are satisfied under the <strong>all-uses</strong> and <strong>all-DU-paths</strong> coverage criteria</li>
+      <li>Analyse dataflow <strong>across method call boundaries</strong> (interprocedural DU pairs and paths)</li>
       <li>Produce an <strong>HTML coverage report</strong> across multiple methods</li>
     </ul>
     <p>
@@ -382,7 +384,7 @@
       <p>
         Download the latest JAR from the <a href="downloads.html">Downloads</a> page and run it from a terminal:
       </p>
-      <pre>java -jar dftest-1.4-all.jar</pre>
+      <pre>java -jar dftest-2.0-all.jar</pre>
       <p>
         The GUI will open showing a default Java method already loaded and analysed.
       </p>
@@ -722,6 +724,52 @@
     <div class="callout info">
       <strong>Tip:</strong> Save the project after setting the test file so you
       do not have to configure the classpath again on the next session.
+    </div>
+
+    <!-- 12. INTERPROCEDURAL -->
+    <h2 id="interprocedural">12 — Interprocedural analysis</h2>
+    <p>
+      When you have loaded multiple source files that contain a caller and a callee method,
+      DFTest can compute DU pairs and paths that cross the call boundary.
+    </p>
+
+    <div class="step-block">
+      <div class="step-label">Step 13</div>
+      <h3>Switch to the IP tab</h3>
+      <p>
+        Click the <strong>IP</strong> tab at the top of the window. Use the
+        <strong>Caller</strong> and <strong>Callee</strong> dropdowns to select the
+        two methods involved in the call, then pick the specific <strong>call site</strong>
+        from the third dropdown. Both CFGs are rendered side-by-side immediately.
+      </p>
+      <p>
+        A blue bezier arrow connects the call-site node in the caller graph to the
+        entry node of the callee. An orange arrow connects the callee exit back to
+        the call site, representing the return flow. Both arrows track node positions
+        continuously as you drag or zoom the graphs.
+      </p>
+    </div>
+
+    <div class="step-block">
+      <div class="step-label">Step 14</div>
+      <h3>Explore IP DU pairs, paths, and test traces</h3>
+      <p>
+        The bottom of the IP tab shows two panels: <strong>Interprocedural DU Pairs</strong>
+        and <strong>Interprocedural DU Paths</strong>, each prefixed with ✓/⍻/✗ marks
+        computed from the test traces collected when you ran your test file.
+        Clicking a DU path highlights the relevant nodes in both graphs simultaneously.
+      </p>
+      <p>
+        The <strong>Test paths</strong> panel on the left lists each test's filtered
+        execution trace across the boundary. Clicking a test highlights its path through
+        both the caller and callee CFGs.
+      </p>
+    </div>
+
+    <div class="callout tip">
+      <strong>Tip:</strong> Use <strong>📊 Matrix</strong> while on the IP tab to open
+      the coverage matrix for interprocedural requirements — the same redundancy, minimal
+      cover, and preference controls apply.
     </div>
 
   </div><!-- /content -->

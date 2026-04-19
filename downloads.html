@@ -443,17 +443,16 @@
   <div class="release-card-inner">
     <div class="release-info">
       <div class="release-badge">Latest</div>
-      <h2>DFTest 1.4</h2>
-      <div class="release-meta">Released April 2026 &nbsp;·&nbsp; dftest-1.4-all.jar &nbsp;·&nbsp; requires JDK 21+</div>
+      <h2>DFTest 2.0</h2>
+      <div class="release-meta">Released April 2026 &nbsp;·&nbsp; dftest-2.0-all.jar &nbsp;·&nbsp; requires JDK 21+</div>
       <p class="release-note">
-        Introduces a folder-browser dialog for managing source files, support for
-        loading multiple test files simultaneously, and several instrumentation
-        reliability fixes including Allman-style brace handling and a name-collision
-        fix for local variables named <code>cfg</code>.
+        Major new release introducing <strong>interprocedural dataflow analysis</strong> —
+        load multiple Java source files, select a call site, and explore DU pairs and paths
+        that cross method boundaries, with dual CFG panels and animated call/return arrows.
       </p>
     </div>
-    <a href="dftest-1.4-all.jar" download class="btn btn-primary" style="font-size:1.05rem; padding:1rem 2.4rem;">
-      ⬇ &nbsp;Download v1.4
+    <a href="dftest-2.0-all.jar" download class="btn btn-primary" style="font-size:1.05rem; padding:1rem 2.4rem;">
+      ⬇ &nbsp;Download v2.0
     </a>
   </div>
 </div>
@@ -474,7 +473,7 @@
     <div class="instr-cell">
       <div class="instr-label">Step 2 — Launch</div>
       <p>Open a terminal in the folder where you saved the JAR and run:</p>
-      <pre>java -jar dftest-1.4-all.jar</pre>
+      <pre>java -jar dftest-2.0-all.jar</pre>
       <p style="margin-top:0.8rem; margin-bottom:0;">
         On Windows you can also double-click the JAR if your JDK is on the system PATH.
       </p>
@@ -502,12 +501,41 @@
 
 <div class="changelog">
 
-  <!-- v1.4 -->
+  <!-- v2.0 -->
   <div class="changelog-entry">
     <div class="changelog-header">
       <div style="display:flex; align-items:center; gap:1rem;">
-        <span class="changelog-version">Version 1.4</span>
+        <span class="changelog-version">Version 2.0</span>
         <span class="changelog-tag tag-current">Current</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:1.5rem; flex-wrap:wrap;">
+        <span class="changelog-date">April 2026</span>
+        <a href="dftest-2.0-all.jar" download class="changelog-dl-link">⬇ dftest-2.0-all.jar</a>
+      </div>
+    </div>
+    <div class="changelog-body">
+      <div class="changelog-section">
+        <div class="changelog-section-title">New features</div>
+        <ul>
+          <li><strong style="color:var(--white)">Interprocedural DU analysis</strong> — load multiple Java source files and select a call site to analyse dataflow across a caller/callee boundary. The new <strong>IP tab</strong> displays both CFGs side-by-side, with animated bezier arrows showing the call (blue) and return (orange) links between panels. DU pairs and DU paths that span the boundary are computed and shown with ✓/⍻/✗ coverage marks alongside a test-path walkthrough panel. Clicking any DU path or test path highlights the relevant nodes in both graphs simultaneously.</li>
+          <li><strong style="color:var(--white)">Interprocedural coverage matrix</strong> — the <strong>📊 Matrix</strong> dialog is also available for interprocedural DU pairs and paths, with the same redundancy, minimal cover, and preference controls as the intraprocedural matrix.</li>
+        </ul>
+      </div>
+      <div class="changelog-section">
+        <div class="changelog-section-title">Bug fixes</div>
+        <ul>
+          <li><strong style="color:var(--white)">Multi-source project load</strong> — projects that reference more than one source file now correctly reload all files on open; previously only the first linked file was recalled.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- v1.4 -->
+  <div class="changelog-entry changelog-entry-older">
+    <div class="changelog-header">
+      <div style="display:flex; align-items:center; gap:1rem;">
+        <span class="changelog-version">Version 1.4</span>
+        <span class="changelog-tag tag-older">Older</span>
       </div>
       <div style="display:flex; align-items:center; gap:1.5rem; flex-wrap:wrap;">
         <span class="changelog-date">April 2026</span>
