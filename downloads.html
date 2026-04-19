@@ -443,16 +443,16 @@
   <div class="release-card-inner">
     <div class="release-info">
       <div class="release-badge">Latest</div>
-      <h2>DFTest 2.0</h2>
-      <div class="release-meta">Released April 2026 &nbsp;·&nbsp; dftest-2.0-all.jar &nbsp;·&nbsp; requires JDK 21+</div>
+      <h2>DFTest 2.1</h2>
+      <div class="release-meta">Released April 2026 &nbsp;·&nbsp; dftest-2.1-all.jar &nbsp;·&nbsp; requires JDK 21+</div>
       <p class="release-note">
-        Major new release introducing <strong>interprocedural dataflow analysis</strong> —
-        load multiple Java source files, select a call site, and explore DU pairs and paths
-        that cross method boundaries, with dual CFG panels and animated call/return arrows.
+        Refines interprocedural analysis with richer test-path display, constituent-variable
+        argument tracing, source click-to-highlight in the IP tab, and several correctness
+        fixes for path filtering and pane layout.
       </p>
     </div>
-    <a href="dftest-2.0-all.jar" download class="btn btn-primary" style="font-size:1.05rem; padding:1rem 2.4rem;">
-      ⬇ &nbsp;Download v2.0
+    <a href="dftest-2.1-all.jar" download class="btn btn-primary" style="font-size:1.05rem; padding:1rem 2.4rem;">
+      ⬇ &nbsp;Download v2.1
     </a>
   </div>
 </div>
@@ -473,7 +473,7 @@
     <div class="instr-cell">
       <div class="instr-label">Step 2 — Launch</div>
       <p>Open a terminal in the folder where you saved the JAR and run:</p>
-      <pre>java -jar dftest-2.0-all.jar</pre>
+      <pre>java -jar dftest-2.1-all.jar</pre>
       <p style="margin-top:0.8rem; margin-bottom:0;">
         On Windows you can also double-click the JAR if your JDK is on the system PATH.
       </p>
@@ -501,12 +501,47 @@
 
 <div class="changelog">
 
-  <!-- v2.0 -->
+  <!-- v2.1 -->
   <div class="changelog-entry">
     <div class="changelog-header">
       <div style="display:flex; align-items:center; gap:1rem;">
-        <span class="changelog-version">Version 2.0</span>
+        <span class="changelog-version">Version 2.1</span>
         <span class="changelog-tag tag-current">Current</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:1.5rem; flex-wrap:wrap;">
+        <span class="changelog-date">April 2026</span>
+        <a href="dftest-2.1-all.jar" download class="changelog-dl-link">⬇ dftest-2.1-all.jar</a>
+      </div>
+    </div>
+    <div class="changelog-body">
+      <div class="changelog-section">
+        <div class="changelog-section-title">New features</div>
+        <ul>
+          <li><strong style="color:var(--white)">Multiple callee traversals per test</strong> — when a test exercises the same call boundary more than once (e.g. inside a loop), each crossing is shown as a separate entry (<code>testName#1</code>, <code>testName#2</code>, …) in the test paths panel. Duplicate crossings are deduplicated automatically.</li>
+          <li><strong style="color:var(--white)">Constituent-variable argument tracing</strong> — for call arguments that are expressions (e.g. <code>a + b</code>, <code>-x</code>, <code>a ? b : c</code>), interprocedural DU pairs are now computed from the last-definitions of every component variable rather than synthesising a spurious def at the call site.</li>
+          <li><strong style="color:var(--white)">Duplicate call-site disambiguation</strong> — when the same method is called multiple times in an expression (e.g. <code>positive(a) &amp;&amp; positive(b)</code>), each call site in the drop-down is labelled with its argument names to distinguish them.</li>
+          <li><strong style="color:var(--white)">Click-to-deselect in CFG panels</strong> — clicking on the blank area of a CFG panel (intraprocedural or IP) clears the current path selection and removes the orange on-path highlighting.</li>
+          <li><strong style="color:var(--white)">Source click-to-highlight in IP tab</strong> — clicking any CFG node in the interprocedural tab jumps to the corresponding source line in the source panel, with the same behaviour as the intraprocedural tab.</li>
+        </ul>
+      </div>
+      <div class="changelog-section">
+        <div class="changelog-section-title">Bug fixes</div>
+        <ul>
+          <li><strong style="color:var(--white)">Impossible test paths eliminated</strong> — callee-method executions triggered by callers other than the selected call site no longer appear as spurious test-path entries in the IP panel. Paths were previously generated that skipped the call-site node entirely.</li>
+          <li><strong style="color:var(--white)">IP pane divider resize</strong> — all split-pane items now have an unconstrained minimum width, allowing the divider to be dragged freely in both directions.</li>
+          <li><strong style="color:var(--white)">Source lookup for multi-class files</strong> — clicking a CFG node in a class defined inside a multi-class <code>.java</code> file (e.g. inner top-level classes) now correctly locates the source, instead of reporting "no source found".</li>
+          <li><strong style="color:var(--white)">IP DU-path deselection</strong> — switching from one DU path to another in the IP tab now correctly clears the previous highlight before applying the new one.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- v2.0 -->
+  <div class="changelog-entry changelog-entry-older">
+    <div class="changelog-header">
+      <div style="display:flex; align-items:center; gap:1rem;">
+        <span class="changelog-version">Version 2.0</span>
+        <span class="changelog-tag tag-older">Older</span>
       </div>
       <div style="display:flex; align-items:center; gap:1.5rem; flex-wrap:wrap;">
         <span class="changelog-date">April 2026</span>
